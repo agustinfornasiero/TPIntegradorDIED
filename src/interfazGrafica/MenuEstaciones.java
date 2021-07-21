@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 public class MenuEstaciones extends JPanel
 {
 	private GridBagConstraints gbc;
-	private JButton btn1, btn2, btn3, btn4, btn5;
+	private JButton btn1, btn2, btn3, btn4;
 	private JFrame ventana;
 	private JPanel padre;
 	
@@ -28,10 +28,9 @@ public class MenuEstaciones extends JPanel
 	private void armarPanel() 
 	{
 		btn1 = new JButton("Agregar estación");
-		btn2 = new JButton("Modificar estación");
+		btn2 = new JButton("Consultar y/o modificar estaciones");
 		btn3 = new JButton("Eliminar estación");
-		btn4 = new JButton("Consultar estaciones");
-		btn5 = new JButton("Volver");
+		btn4 = new JButton("Volver");
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -53,7 +52,13 @@ public class MenuEstaciones extends JPanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(btn2, gbc);
-		btn2.addActionListener(e -> {}); // Pendiente
+		btn2.addActionListener(
+			e -> { 
+				ventana.setContentPane(new MenuConsultarYModificarEstaciones(ventana, this));
+				ventana.pack();
+				ventana.setVisible(true);	
+			}		
+		); 
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -61,23 +66,15 @@ public class MenuEstaciones extends JPanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(btn3, gbc);
-		btn3.addActionListener(e -> {}); // Pendiente
+		btn3.addActionListener(e -> {}); // Pendiente 
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		gbc.ipady = 15;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(5, 20, 5, 20);
-		this.add(btn4, gbc);
-		btn4.addActionListener(e -> {}); // Pendiente
-		
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		gbc.ipady = 15;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(30, 20, 10, 20);
-		this.add(btn5, gbc);
-		btn5.addActionListener(
+		this.add(btn4, gbc);
+		btn4.addActionListener(
 			e -> {
 					ventana.setContentPane(padre);
 					ventana.pack();
