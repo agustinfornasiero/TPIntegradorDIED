@@ -1,4 +1,4 @@
-package interfazGrafica;
+package interfazGrafica.lineaDeTransporte;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;

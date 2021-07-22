@@ -1,4 +1,4 @@
-package interfazGrafica;
+package interfazGrafica.estacion;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;

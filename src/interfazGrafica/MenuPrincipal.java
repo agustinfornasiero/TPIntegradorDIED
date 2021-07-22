@@ -11,6 +11,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import interfazGrafica.estacion.MenuEstaciones;
+import interfazGrafica.lineaDeTransporte.MenuLineasDeTransporte;
+
 @SuppressWarnings("serial")
 public class MenuPrincipal extends JPanel
 {
@@ -33,7 +36,7 @@ public class MenuPrincipal extends JPanel
 		btn2 = new JButton("Lineas de transporte");
 		btn3 = new JButton("Venta de boleto");
 		
-		lbl1 = new JLabel("Sistema de gesti�n de transporte multimodal");
+		lbl1 = new JLabel("Sistema de gestion de transporte multimodal");
 		lbl1.setFont(new Font("Serif", Font.BOLD, 16));
 		
 		gbc.gridx = 0;
