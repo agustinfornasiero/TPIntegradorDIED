@@ -102,17 +102,17 @@ public class MenuAgregarEstacion extends JPanel
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(cb1, gbc);
 		
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 4;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.fill = GridBagConstraints.NONE;
 		gbc.ipady = 15;
 		gbc.insets = new Insets(30, 20, 10, 20);
 		this.add(btn1, gbc);
 		btn1.addActionListener(e -> {});  // Pendiente
 		
-		gbc.gridx = 1;
+		gbc.gridx = 0;
 		gbc.gridy = 4;
-		gbc.fill = GridBagConstraints.NONE;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.ipady = 15;
 		gbc.insets = new Insets(30, 20, 10, 20);
 		this.add(btn2, gbc);

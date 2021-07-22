@@ -35,6 +35,8 @@ public class MenuEstaciones extends JPanel
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.ipady = 15;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 20, 5, 20);
 		this.add(btn1, gbc);
@@ -49,28 +51,40 @@ public class MenuEstaciones extends JPanel
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.ipady = 15;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(btn2, gbc);
 		btn2.addActionListener(
 			e -> { 
-				ventana.setContentPane(new MenuConsultarYModificarEstaciones(ventana, this));
-				ventana.pack();
-				ventana.setVisible(true);	
-			}		
+					ventana.setContentPane(new MenuConsultarYModificarEstaciones(ventana, this));
+					ventana.pack();
+					ventana.setVisible(true);	
+				 }		
 		); 
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.ipady = 15;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(btn3, gbc);
-		btn3.addActionListener(e -> {}); // Pendiente 
+		btn3.addActionListener(
+			e -> { 
+					ventana.setContentPane(new MenuEliminarEstacion(ventana, this));
+					ventana.pack();
+					ventana.setVisible(true);	
+			 	 }
+		); 
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		gbc.ipady = 15;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(30, 20, 10, 20);
 		this.add(btn4, gbc);

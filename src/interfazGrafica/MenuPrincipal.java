@@ -16,7 +16,7 @@ public class MenuPrincipal extends JPanel
 {
 	private GridBagConstraints gbc;
 	private JButton btn1, btn2, btn3;
-	private JLabel lbl1, lbl2;
+	private JLabel lbl1;
 	private JFrame ventana;
 	
 	public MenuPrincipal(JFrame ventana)
@@ -35,26 +35,21 @@ public class MenuPrincipal extends JPanel
 		
 		lbl1 = new JLabel("Sistema de gestión de transporte multimodal");
 		lbl1.setFont(new Font("Serif", Font.BOLD, 16));
-		lbl2 = new JLabel("___________________________________________");
-		lbl2.setFont(new Font("Serif", Font.BOLD, 16));
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.ipady = 0;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.CENTER;
-		gbc.insets = new Insets(10, 20, 0, 20);
+		gbc.insets = new Insets(10, 20, 30, 20);
 		this.add(lbl1, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.ipady = 0;
-		gbc.fill = GridBagConstraints.CENTER;
-		gbc.insets = new Insets(5, 20, 10, 20);
-		this.add(lbl2, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 2;
 		gbc.ipady = 15;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(btn1, gbc);
@@ -67,16 +62,20 @@ public class MenuPrincipal extends JPanel
 		);
 	
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 2;
 		gbc.ipady = 15;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(btn2, gbc);
 		btn2.addActionListener(e -> {}); // Pendiente
 		
 		gbc.gridx = 0;
-		gbc.gridy = 4;
+		gbc.gridy = 3;
 		gbc.ipady = 15;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 20, 10, 20);
 		this.add(btn3, gbc);
