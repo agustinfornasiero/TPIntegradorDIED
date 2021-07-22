@@ -30,10 +30,10 @@ public class MenuPrincipal extends JPanel
 	private void armarPanel() 
 	{
 		btn1 = new JButton("Estaciones");
-		btn2 = new JButton("Líneas de transporte");
+		btn2 = new JButton("Lineas de transporte");
 		btn3 = new JButton("Venta de boleto");
 		
-		lbl1 = new JLabel("Sistema de gestión de transporte multimodal");
+		lbl1 = new JLabel("Sistema de gestiï¿½n de transporte multimodal");
 		lbl1.setFont(new Font("Serif", Font.BOLD, 16));
 		
 		gbc.gridx = 0;

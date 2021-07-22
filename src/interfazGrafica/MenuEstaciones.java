@@ -27,9 +27,9 @@ public class MenuEstaciones extends JPanel
 	
 	private void armarPanel() 
 	{
-		btn1 = new JButton("Agregar estación");
+		btn1 = new JButton("Agregar estacion");
 		btn2 = new JButton("Consultar y/o modificar estaciones");
-		btn3 = new JButton("Eliminar estación");
+		btn3 = new JButton("Eliminar estacion");
 		btn4 = new JButton("Volver");
 		
 		gbc.gridx = 0;

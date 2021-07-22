@@ -27,9 +27,9 @@ public class MenuLineasDeTransporte extends JPanel
 	
 	private void armarPanel() 
 	{
-		btn1 = new JButton("Agregar línea de transporte");
-		btn2 = new JButton("Consultar y/o modificar líneas de transporte");
-		btn3 = new JButton("Eliminar línea de transporte");
+		btn1 = new JButton("Agregar linea de transporte");
+		btn2 = new JButton("Consultar y/o modificar lineas de transporte");
+		btn3 = new JButton("Eliminar linea de transporte");
 		btn4 = new JButton("Volver");
 		
 		gbc.gridx = 0;
