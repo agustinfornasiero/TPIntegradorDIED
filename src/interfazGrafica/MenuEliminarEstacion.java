@@ -37,13 +37,19 @@ public class MenuEliminarEstacion extends JPanel
 		btn1 = new JButton("Eliminar");
 		btn2 = new JButton("Volver");
 		lbl1 = new JLabel("Seleccione la estación que desea eliminar: ");
+		lbl2 = new JLabel();
 		cb = new JComboBox<Integer>();
 		
 		// *Obtener ids estaciones*
 		for (Integer i: opciones)
 			cb.addItem(i);
 		
-		lbl2 = new JLabel("(" + nombresEstaciones[(int) cb.getSelectedItem() - 1] + ")");
+		this.gestionarLblNombreEstacion();
+		if(cb.getItemCount() == 0)
+		{
+			btn1.setEnabled(false);
+			cb.setEnabled(false);
+		}
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -74,9 +80,7 @@ public class MenuEliminarEstacion extends JPanel
 		gbc.weighty = 0.0;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(cb, gbc);
-		cb.addActionListener(
-				e -> lbl2.setText("(" + nombresEstaciones[(int) cb.getSelectedItem() - 1] + ")")
-		); // Reemplazar con una consulta que obtenga el nombre de estacion 
+		cb.addActionListener(e -> this.gestionarLblNombreEstacion()); 
 	
 		gbc.gridx = 3;
 		gbc.gridy = 1;
@@ -89,10 +93,16 @@ public class MenuEliminarEstacion extends JPanel
 		this.add(btn1, gbc);
 		btn1.addActionListener(
 			e -> {
-					System.out.println(cb.getSelectedItem());
-					cb.removeItem(cb.getSelectedItem());
-					// *Eliminar de la DB*
-					
+					if (cb.getItemCount() > 0)
+					{
+						cb.removeItem(cb.getSelectedItem());
+						// *Eliminar de la DB*
+						if (cb.getItemCount() == 0)
+						{
+							btn1.setEnabled(false);
+							cb.setEnabled(false);
+						}
+					}
 				 }
 		);
 		
@@ -112,6 +122,14 @@ public class MenuEliminarEstacion extends JPanel
 					ventana.setVisible(true);
 				 }
 		);
+	}
+	
+	private void gestionarLblNombreEstacion()
+	{
+		if (cb.getItemCount() - 1 > 0) 
+			lbl2.setText("(" + nombresEstaciones[(int) cb.getSelectedItem() - 1] + ")"); // Reemplazar con una consulta que obtenga el nombre de estacion 
+		else
+			lbl2.setText("(Sin estaciones restantes)");
 	}
 }
 

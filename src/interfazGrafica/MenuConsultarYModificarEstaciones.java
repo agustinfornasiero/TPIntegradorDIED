@@ -23,7 +23,7 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 	@SuppressWarnings("serial")
 	class ModeloTablaEstaciones extends AbstractTableModel
 	{
-		private String[] nombreColumnas = {"Id", "Nombre", "Horario apertura", "Horario cierre", "Estado"};
+		private String[] nombreColumnas = {"Id", "Nombre", "Horario de apertura", "Horario de cierre", "Estado"};
 		private Object[][] datos = { {"", "", "", ""} };
 		 
 		public void setData(Object[][] datos) 			{ this.datos = datos; 					}
@@ -67,7 +67,7 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 	private void armarPanel()
 	{
 		btn1 = new JButton("Volver");
-		estado = new JComboBox();
+		estado = new JComboBox<String>();
 		modeloTabla = new ModeloTablaEstaciones();
 		tabla = new JTable(modeloTabla);
 	    sp = new JScrollPane(tabla);
@@ -85,11 +85,13 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 	
 	    gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.weightx = 1.0;
 		gbc.ipady = 0;
 		this.add(sp, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
+		gbc.weightx = 0.0;
 		gbc.ipady = 15;
 		gbc.insets = new Insets(30, 20, 10, 20);
 		gbc.fill = GridBagConstraints.CENTER;

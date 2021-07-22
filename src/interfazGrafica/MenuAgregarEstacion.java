@@ -53,66 +53,98 @@ public class MenuAgregarEstacion extends JPanel
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.25;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(10, 5, 5, 5);
 		this.add(lbl1, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridwidth = 2;
+		gbc.weightx = 0.75;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 5, 5, 5);
 		this.add(txtf1, gbc);
 		txtf1.addActionListener(e -> {}); // Pendiente
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.25;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(lbl2, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridwidth = 2;
+		gbc.weightx = 0.75;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(txtf2, gbc);
-		txtf1.addActionListener(e -> {}); // Pendiente
+		txtf1.addActionListener(
+			e -> {
+					txtf1.setText("");
+					txtf2.setText("");
+					txtf3.setText("");
+					cb1.setSelectedItem("Operativa");
+					txtf1.validate(); // Quiero que una vez ingresada una estacion se limpien los valores, pero no anda
+					txtf2.validate();
+					txtf3.validate();
+					cb1.validate();
+					// *Agregar a la DB*
+				 }	
+		); 
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.25;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(lbl3, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridwidth = 2;
+		gbc.weightx = 0.75;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(txtf3, gbc);
 		txtf1.addActionListener(e -> {}); // Pendiente
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.25;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(lbl4, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 3;
+		gbc.gridwidth = 2;
+		gbc.weightx = 0.75;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(cb1, gbc);
 		
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 4;
-		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.EAST;
 		gbc.ipady = 15;
 		gbc.insets = new Insets(30, 20, 10, 20);
 		this.add(btn1, gbc);
 		btn1.addActionListener(e -> {});  // Pendiente
 		
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 4;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.WEST;
 		gbc.ipady = 15;
 		gbc.insets = new Insets(30, 20, 10, 20);
 		this.add(btn2, gbc);
