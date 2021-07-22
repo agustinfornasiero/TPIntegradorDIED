@@ -9,14 +9,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class MenuEstaciones extends JPanel
+public class MenuLineasDeTransporte extends JPanel
 {
 	private GridBagConstraints gbc;
 	private JButton btn1, btn2, btn3, btn4;
 	private JFrame ventana;
 	private JPanel padre;
 	
-	public MenuEstaciones(JFrame ventana, JPanel padre)
+	public MenuLineasDeTransporte(JFrame ventana, JPanel padre)
 	{
 		this.ventana = ventana;
 		this.padre = padre;
@@ -27,9 +27,9 @@ public class MenuEstaciones extends JPanel
 	
 	private void armarPanel() 
 	{
-		btn1 = new JButton("Agregar estación");
-		btn2 = new JButton("Consultar y/o modificar estaciones");
-		btn3 = new JButton("Eliminar estación");
+		btn1 = new JButton("Agregar línea de transporte");
+		btn2 = new JButton("Consultar y/o modificar líneas de transporte");
+		btn3 = new JButton("Eliminar línea de transporte");
 		btn4 = new JButton("Volver");
 		
 		gbc.gridx = 0;
@@ -42,7 +42,7 @@ public class MenuEstaciones extends JPanel
 		this.add(btn1, gbc);
 		btn1.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuAgregarEstacion(ventana, this));
+					ventana.setContentPane(new MenuAgregarLineaDeTransporte(ventana, this));
 					ventana.pack();
 					ventana.setVisible(true);	
 				 } 
@@ -58,9 +58,9 @@ public class MenuEstaciones extends JPanel
 		this.add(btn2, gbc);
 		btn2.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuConsultarYModificarEstaciones(ventana, this));
+			/*		ventana.setContentPane(new MenuConsultarYModificarEstaciones(ventana, this));
 					ventana.pack();
-					ventana.setVisible(true);	
+					ventana.setVisible(true);	*/
 				 }		
 		); 
 		
@@ -74,9 +74,9 @@ public class MenuEstaciones extends JPanel
 		this.add(btn3, gbc);
 		btn3.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuEliminarEstacion(ventana, this));
+				/*	ventana.setContentPane(new MenuEliminarEstacion(ventana, this));
 					ventana.pack();
-					ventana.setVisible(true);	
+					ventana.setVisible(true);	*/
 			 	 }
 		); 
 		
@@ -97,4 +97,3 @@ public class MenuEstaciones extends JPanel
 		);
 	}
 }
-

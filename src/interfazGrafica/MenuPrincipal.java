@@ -30,10 +30,10 @@ public class MenuPrincipal extends JPanel
 	private void armarPanel() 
 	{
 		btn1 = new JButton("Estaciones");
-		btn2 = new JButton("LÃ­neas de transporte");
+		btn2 = new JButton("Líneas de transporte");
 		btn3 = new JButton("Venta de boleto");
 		
-		lbl1 = new JLabel("Sistema de gestiÃ³n de transporte multimodal");
+		lbl1 = new JLabel("Sistema de gestión de transporte multimodal");
 		lbl1.setFont(new Font("Serif", Font.BOLD, 16));
 		
 		gbc.gridx = 0;
@@ -69,7 +69,13 @@ public class MenuPrincipal extends JPanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(btn2, gbc);
-		btn2.addActionListener(e -> {}); // Pendiente
+		btn2.addActionListener(
+			e -> {
+					ventana.setContentPane(new MenuLineasDeTransporte(ventana, this));
+					ventana.pack();
+					ventana.setVisible(true);
+				 }
+		);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
