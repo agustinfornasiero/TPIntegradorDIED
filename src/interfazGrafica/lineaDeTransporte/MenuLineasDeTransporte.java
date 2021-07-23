@@ -58,9 +58,9 @@ public class MenuLineasDeTransporte extends JPanel
 		this.add(btn2, gbc);
 		btn2.addActionListener(
 			e -> { 
-			/*		ventana.setContentPane(new MenuConsultarYModificarEstaciones(ventana, this));
+					ventana.setContentPane(new MenuConsultarYModificarLineasDeTransporte(ventana, this));
 					ventana.pack();
-					ventana.setVisible(true);	*/
+					ventana.setVisible(true);	
 				 }		
 		); 
 		
@@ -74,9 +74,9 @@ public class MenuLineasDeTransporte extends JPanel
 		this.add(btn3, gbc);
 		btn3.addActionListener(
 			e -> { 
-				/*	ventana.setContentPane(new MenuEliminarEstacion(ventana, this));
+					ventana.setContentPane(new MenuEliminarLineaDeTransporte(ventana, this));
 					ventana.pack();
-					ventana.setVisible(true);	*/
+					ventana.setVisible(true);	
 			 	 }
 		); 
 		

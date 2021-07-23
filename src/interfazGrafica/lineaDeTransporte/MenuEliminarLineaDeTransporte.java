@@ -1,4 +1,4 @@
-package interfazGrafica.estacion;
+package interfazGrafica.lineaDeTransporte;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class MenuEliminarEstacion extends JPanel 
+public class MenuEliminarLineaDeTransporte extends JPanel 
 {
 	private JFrame ventana;
 	private JPanel padre;
@@ -20,10 +20,10 @@ public class MenuEliminarEstacion extends JPanel
 	private JButton btn1, btn2;
 	private JLabel lbl1, lbl2;
 	Integer[] opciones = {1, 2, 3}; // Provisional
-	String[] nombresEstaciones = {"Estacion A", "Estacion B", "Estacion C"}; // Provisional
+	String[] nombresLineasDeTransporte = {"Linea 1", "Linea 2", "Linea 3"}; // Provisional
 	
 	
-	public MenuEliminarEstacion(JFrame ventana, JPanel padre)
+	public MenuEliminarLineaDeTransporte(JFrame ventana, JPanel padre)
 	{
 		this.ventana = ventana;
 		this.padre = padre;
@@ -36,15 +36,15 @@ public class MenuEliminarEstacion extends JPanel
 	{
 		btn1 = new JButton("Eliminar");
 		btn2 = new JButton("Volver");
-		lbl1 = new JLabel("Seleccione la estacion que desea eliminar: ");
+		lbl1 = new JLabel("Seleccione la linea de transporte que desea eliminar: ");
 		lbl2 = new JLabel();
 		cb = new JComboBox<Integer>();
 		
-		// *Obtener ids estaciones*
+		// *Obtener ids lineas*
 		for (Integer i: opciones)
 			cb.addItem(i);
 		
-		this.gestionarLblNombreEstacion();
+		this.gestionarLblNombreLineaDeTransporte();
 		if(cb.getItemCount() == 0)
 		{
 			btn1.setEnabled(false);
@@ -80,7 +80,7 @@ public class MenuEliminarEstacion extends JPanel
 		gbc.weighty = 0.0;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(cb, gbc);
-		cb.addActionListener(e -> this.gestionarLblNombreEstacion()); 
+		cb.addActionListener(e -> this.gestionarLblNombreLineaDeTransporte()); 
 	
 		gbc.gridx = 3;
 		gbc.gridy = 1;
@@ -124,12 +124,11 @@ public class MenuEliminarEstacion extends JPanel
 		);
 	}
 	
-	private void gestionarLblNombreEstacion()
+	private void gestionarLblNombreLineaDeTransporte()
 	{
 		if (cb.getItemCount() - 1 > 0) 
-			lbl2.setText("(" + nombresEstaciones[(int) cb.getSelectedItem() - 1] + ")"); // Reemplazar con una consulta que obtenga el nombre de estacion 
+			lbl2.setText("(" + nombresLineasDeTransporte[(int) cb.getSelectedItem() - 1] + ")"); // Reemplazar con una consulta que obtenga el nombre de linea 
 		else
-			lbl2.setText("(Sin estaciones restantes)");
+			lbl2.setText("(Sin lineas de transporte restantes)");
 	}
 }
-

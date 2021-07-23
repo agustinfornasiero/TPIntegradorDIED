@@ -1,4 +1,4 @@
-package interfazGrafica.estacion;
+package interfazGrafica.lineaDeTransporte;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -18,13 +18,13 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
-public class MenuConsultarYModificarEstaciones extends JPanel implements TableModelListener
+public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements TableModelListener
 {
 	@SuppressWarnings("serial")
-	class ModeloTablaEstaciones extends AbstractTableModel
+	class ModeloTablaLineasDeTransporte extends AbstractTableModel
 	{
-		private String[] nombreColumnas = {"Id", "Nombre", "Horario de apertura", "Horario de cierre", "Estado"};
-		private Object[][] datos = { {"", "", "", ""} };
+		private String[] nombreColumnas = {"Id", "Nombre", "Color", "Estado"};
+		private Object[][] datos = { {"", "", ""} };
 		 
 		public void setData(Object[][] datos) 			{ this.datos = datos; 					}
 		public int getColumnCount() 					{ return nombreColumnas.length; 		}
@@ -43,18 +43,18 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 	private GridBagConstraints gbc;
 	private JButton btn1;
 	private JTable tabla;
-	private ModeloTablaEstaciones modeloTabla;
+	private ModeloTablaLineasDeTransporte modeloTabla;
 	private JScrollPane sp;
 	private JFrame ventana;
 	private JPanel padre;
 	private JComboBox estado;
 	Object[][] datos = { //Provisional
-							{1, "Estacion A", "7:00", "23:00", "Operativa"},
-							{2, "Estacion B", "7:00", "23:00", "En mantenimiento"},
-	   						{3, "Estacion C", "7:00", "23:00", "Operativa"},
+							{1, "Linea 1", "Rojo", "Activa"},
+							{2, "Linea 2", "Verde", "No Activa"},
+	   						{3, "Linea 3", "Azul", "Activa"},
 					   };
 
-	public MenuConsultarYModificarEstaciones(JFrame ventana, JPanel padre)
+	public MenuConsultarYModificarLineasDeTransporte(JFrame ventana, JPanel padre)
 	{
 		this.ventana = ventana;
 		this.padre = padre;
@@ -68,18 +68,18 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 	{
 		btn1 = new JButton("Volver");
 		estado = new JComboBox<String>();
-		modeloTabla = new ModeloTablaEstaciones();
+		modeloTabla = new ModeloTablaLineasDeTransporte();
 		tabla = new JTable(modeloTabla);
 	    sp = new JScrollPane(tabla);
 		
-		estado.addItem("Operativa");
-		estado.addItem("En mantenimiento");
+		estado.addItem("Activa");
+		estado.addItem("No Activa");
 		
-		tabla.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(estado));
+		tabla.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(estado));
 		tabla.setPreferredScrollableViewportSize(new Dimension(600, 200));
 	    tabla.getModel().addTableModelListener(this);
 	    tabla.getColumnModel().getColumn(0).setPreferredWidth(20);
-	    tabla.getColumnModel().getColumn(4).setPreferredWidth(120);
+	    tabla.getColumnModel().getColumn(3).setPreferredWidth(120);
 	    
 	    modeloTabla.setData(datos);
 	
