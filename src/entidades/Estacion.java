@@ -1,24 +1,43 @@
 package entidades;
 
 import java.time.LocalTime;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Estacion 
 {
-	public enum EstadoEstacion
+	public enum Estado
 	{
 		OPERATIVA,
 		EN_MANTENIMIENTO
-	}
+	};
 	
 	private Integer id;
 	private String nombre;
 	private LocalTime horaApertura;
 	private LocalTime horaCierre;
-	private EstadoEstacion estado;
+	private Estado estado;
 	private List <TareaDeMantenimiento> mantenimientosRealizados;
 	
+	public Estacion()
+	{
+		mantenimientosRealizados = new LinkedList<TareaDeMantenimiento>();
+	}
 	
+	public Estacion(String nombre, LocalTime horaApertura, LocalTime horaCierre, Estado estado)
+	{	
+		//El id lo asigna la DB
+		
+		this.nombre = nombre;
+		this.horaApertura = horaApertura;
+		this.horaCierre = horaCierre;
+		this.estado = estado;
+		
+		mantenimientosRealizados = new LinkedList<TareaDeMantenimiento>();
+	}
+
+
+
 	public Integer getId() {
 		return id;
 	}
@@ -43,10 +62,10 @@ public class Estacion
 	public void setHoraCierre(LocalTime horaCierre) {
 		this.horaCierre = horaCierre;
 	}
-	public EstadoEstacion getEstado() {
+	public Estado getEstado() {
 		return estado;
 	}
-	public void setEstado(EstadoEstacion estado) {
+	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
 	public List<TareaDeMantenimiento> getMantenimientosRealizados() {

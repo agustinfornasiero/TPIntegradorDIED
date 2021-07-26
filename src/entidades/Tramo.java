@@ -2,7 +2,7 @@ package entidades;
 
 public class Tramo 
 {
-	public enum EstadoTramo 
+	public enum Estado 
 	{
 		ACTIVO,
 		INACTIVO
@@ -12,7 +12,7 @@ public class Tramo
 	private Double distanciaEnKm;
 	private Integer duracionViajeEnMin;
 	private Integer cantidadMaximaPasajeros;
-	private EstadoTramo estado;
+	private Estado estado;
 	private Double costo;
 	private Estacion origen;
 	private Estacion destino;
@@ -42,10 +42,10 @@ public class Tramo
 	public void setCantidadMaximaPasajeros(Integer cantidadMaximaPasajeros) {
 		this.cantidadMaximaPasajeros = cantidadMaximaPasajeros;
 	}
-	public EstadoTramo getEstado() {
+	public Estado getEstado() {
 		return estado;
 	}
-	public void setEstado(EstadoTramo estado) {
+	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
 	public Double getCosto() {

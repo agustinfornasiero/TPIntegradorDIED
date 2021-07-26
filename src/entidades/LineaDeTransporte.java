@@ -4,7 +4,7 @@ import java.util.List;
 
 public class LineaDeTransporte 
 {
-	public enum EstadoLineaDeTransporte
+	public enum Estado
 	{
 		ACTIVA,
 		INACTIVA
@@ -13,7 +13,7 @@ public class LineaDeTransporte
 	private Integer id;
 	private String nombre;
 	private String color;
-	private EstadoLineaDeTransporte estado;
+	private Estado estado;
 	private List<Estacion> estacionesLinea;
 	
 	
@@ -35,10 +35,10 @@ public class LineaDeTransporte
 	public void setColor(String color) {
 		this.color = color;
 	}
-	public EstadoLineaDeTransporte getEstado() {
+	public Estado getEstado() {
 		return estado;
 	}
-	public void setEstado(EstadoLineaDeTransporte estado) {
+	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
 	public List<Estacion> getEstacionesLinea() {

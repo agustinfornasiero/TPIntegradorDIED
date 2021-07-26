@@ -1,20 +1,24 @@
 package baseDeDatos;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+// https://stackoverflow.com/questions/30964016/how-to-resolve-no-suitable-driver-found-error
+// https://stackoverflow.com/questions/33350971/no-suitable-driver-for-postgres-even-though-class-forname-works
+// https://www.youtube.com/watch?v=C4EUAfDg4Hc
+
 public final class Conexion 
 {
-	private final String url = "jdbc::/postgresql://127.0.0.1:5432//postgres";
-	private final String usuario = "postgres";
-	private final String contrasenia = "postgres";
+	private static final String url = "jdbc:postgresql://localhost:5432/postgres";
+	private static final String user = "postgres";
+	private static final String pass = "postgres";
 	
-	private Conexion() {}
+	private Conexion() throws ClassNotFoundException { }
 	
-	public static void establecerConexion()
+	public static Connection establecer() throws SQLException, ClassNotFoundException
 	{
-		Connection conexion = null;
-		
 		Class.forName("org.postgresql.Driver");
-		conexion = DriverManager.getConnection(url, usuario, contrasenia);
-		
+		return DriverManager.getConnection(url, user, pass);
 	}
-	
 }
