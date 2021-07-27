@@ -1,5 +1,7 @@
 package entidades;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LineaDeTransporte 
@@ -14,8 +16,23 @@ public class LineaDeTransporte
 	private String nombre;
 	private String color;
 	private Estado estado;
-	private List<Estacion> estacionesLinea;
+	private List<Integer> idsEstaciones;
 	
+	public LineaDeTransporte() 
+	{
+		idsEstaciones = new ArrayList<Integer>();
+	}
+	
+	public LineaDeTransporte(String nombre, String color, Estado estado) 
+	{
+		// El id lo asigna la DB
+		
+		this.nombre = nombre;
+		this.color = color;
+		this.estado = estado;
+		
+		idsEstaciones = new ArrayList<Integer>();
+	}
 	
 	public Integer getId() {
 		return id;
@@ -41,10 +58,10 @@ public class LineaDeTransporte
 	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
-	public List<Estacion> getEstacionesLinea() {
-		return estacionesLinea;
+	public List<Integer> getIdsEstaciones() {
+		return idsEstaciones;
 	}
-	public void setEstacionesLinea(List<Estacion> estacionesLinea) {
-		this.estacionesLinea = estacionesLinea;
+	public void setIdsEstaciones(List<Integer> idsEstaciones) {
+		this.idsEstaciones = idsEstaciones;
 	}
 }

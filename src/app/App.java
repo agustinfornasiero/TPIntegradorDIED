@@ -19,6 +19,7 @@ public final class App
 		Estacion est2 = new Estacion("Estacion B", LocalTime.now(), LocalTime.now().plusHours(8), Estacion.Estado.EN_MANTENIMIENTO);
 		List<Estacion> l;
 		
+		/*
 		try 
 		{
 			EstacionDB.createEstacion(est1);
@@ -37,12 +38,9 @@ public final class App
 			
 			System.out.println("yay");
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
+		*/
 		
 		/*
 		JFrame ventana = new JFrame();

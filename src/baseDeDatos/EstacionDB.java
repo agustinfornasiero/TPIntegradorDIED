@@ -1,98 +1,114 @@
 package baseDeDatos;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import entidades.Estacion;
-import entidades.Estacion.Estado;
 
 // https://jdbc.postgresql.org/documentation/head/8-date-time.html
 
-public class EstacionDB
+public class EstacionDB extends EntidadDB
 {
-	private EstacionDB() { }
+	public EstacionDB() throws ClassNotFoundException, SQLException { super(); }
 	
-	public static void createEstacion(Estacion est) throws SQLException, ClassNotFoundException {
-		Connection c = Conexion.establecer();
+	public void createEstacion(Estacion estacion) throws SQLException 
+	{
 		PreparedStatement ps = c.prepareStatement(
-			"INSERT INTO tp_died.estacion (id, nombre, hora_apertura, hora_cierre, estado) " +
-			"VALUES (NEXTVAL('tp_died.estacion_seq'), ?, ?, ?, ?);"
+				"INSERT INTO tp_died.estacion (id, nombre, hora_apertura, hora_cierre, estado) " +
+				"VALUES (NEXTVAL('tp_died.estacion_seq'), ?, ?, ?, ?);"
+		);
+				
+		completarDatosBasicosEstacion(ps, estacion);
+		// Los mantenimientos realizados se ignoran porque deben tratarse aparte con la clase TareaDeMantenimientoDB
+		// (el dato de la estación a la que se le hace mantenimiento esta en la tabla tarea_de_mantenimiento)
+		ps.executeUpdate();
+		
+		ps.close();
+	}
+	
+	public void updateEstacion(Estacion estacion) throws SQLException, ClassNotFoundException 
+	{
+		PreparedStatement ps = c.prepareStatement(
+			"UPDATE tp_died.estacion " +
+			"SET nombre = ?, hora_apertura = ?, hora_cierre = ?, estado = ? " +
+			"WHERE id = ?;"
 		);
 		
-		ps.setString(1, est.getNombre());
-		ps.setObject(2, est.getHoraApertura());
-		ps.setObject(3, est.getHoraCierre());
-		if (est.getEstado() == Estacion.Estado.OPERATIVA)
-			ps.setString(4, "OPERATIVA");
-		else if (est.getEstado() == Estacion.Estado.EN_MANTENIMIENTO)
-			ps.setString(4, "EN_MANTENIMIENTO");
-		
+		completarDatosBasicosEstacion(ps, estacion);
+		// Los mantenimientos realizados se ignoran porque deben tratarse aparte con la clase TareaDeMantenimientoDB
+		// (el dato de la estación a la que se le hace mantenimiento esta en la tabla tarea_de_mantenimiento)		
+		ps.setInt(5, estacion.getId());
 		ps.executeUpdate();
 		
 		ps.close();
-		c.close();
 	}
-	
-	public static void deleteEstacion(Integer id) throws ClassNotFoundException, SQLException 
+
+	public void deleteEstacion(Integer idEstacion) throws ClassNotFoundException, SQLException 
 	{
-		Connection c = Conexion.establecer();
-		PreparedStatement ps = c.prepareStatement("DELETE FROM tp_died.estacion WHERE id = " + id + ";");
+		PreparedStatement ps1 = c.prepareStatement("DELETE FROM tp_died.estacion WHERE id = ?;");
+		PreparedStatement ps2 = c.prepareStatement("DELETE FROM tp_died.tarea_de_mantenimiento WHERE id_estacion = ?;");
 		
-		ps.executeUpdate();
+		ps1.setInt(1, idEstacion);
+		ps2.setInt(1, idEstacion);
+		ps1.executeUpdate();
+		ps2.executeUpdate();
 		
-		ps.close();
-		c.close();
+		ps1.close();
+		ps2.close();
 	}
 	
-	public static Estacion getEstacion(Integer id) throws SQLException, ClassNotFoundException
+	public Estacion getEstacion(Integer idEstacion) throws SQLException, ClassNotFoundException
 	{
 		Estacion estacion = null;
 		
-		Connection c = Conexion.establecer();
+		TareaDeMantenimientoDB tareaDB = new TareaDeMantenimientoDB();
 		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.estacion WHERE id = ?;");		
 		ResultSet rs; 
 		
-		ps.setInt(1, id);
-		
+		ps.setInt(1, idEstacion);
 		rs = ps.executeQuery();
+		estacion = recuperarEstacion(rs, tareaDB);
 		
-		while(rs.next()) // No parece funcionar sin el while
-			estacion = recuperarEstacion(rs);
-		
+		tareaDB.close();
 		rs.close();
 		ps.close();
-		c.close();
 		
 		return estacion;
 	}
 
-	public static List<Estacion> getAllEstaciones() throws SQLException, ClassNotFoundException 
+	public List<Estacion> getAllEstaciones() throws SQLException, ClassNotFoundException 
 	{
 		List<Estacion> estaciones = new ArrayList<Estacion>();
 		
-		Connection c = Conexion.establecer();
+		TareaDeMantenimientoDB tareaDB = new TareaDeMantenimientoDB();
 		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.estacion ORDER BY id;");		
 		ResultSet rs = ps.executeQuery();
 		
 		while (rs.next())
-		{
-			estaciones.add(recuperarEstacion(rs));
-			rs.next();
-		}
+			estaciones.add(recuperarEstacion(rs, tareaDB));
 		
+		tareaDB.close();
 		rs.close();
 		ps.close();
-		c.close();
 		
 		return estaciones;
 	}
 
-	private static Estacion recuperarEstacion(ResultSet rs) throws SQLException
+	private void completarDatosBasicosEstacion(PreparedStatement ps, Estacion estacion) throws SQLException
+	{
+		ps.setString(1, estacion.getNombre());
+		ps.setObject(2, estacion.getHoraApertura());
+		ps.setObject(3, estacion.getHoraCierre());
+		if (estacion.getEstado() == Estacion.Estado.OPERATIVA)
+			ps.setString(4, "OPERATIVA");
+		else if (estacion.getEstado() == Estacion.Estado.EN_MANTENIMIENTO)
+			ps.setString(4, "EN_MANTENIMIENTO");
+	}
+	
+	private Estacion recuperarEstacion(ResultSet rs, TareaDeMantenimientoDB tareaDB) throws SQLException, ClassNotFoundException
 	{
 		Estacion estacionAux = new Estacion();
 		String estadoEstacion;
@@ -108,33 +124,8 @@ public class EstacionDB
 		else if (estadoEstacion.equals("EN_MANTENIMIENTO"))
 			estacionAux.setEstado(Estacion.Estado.EN_MANTENIMIENTO);
 		
-		// Faltan los mantenimientos
+		estacionAux.setIdsMantenimientosRealizados(tareaDB.getAllTareasDeMantenimiento(rs.getInt("id")));
 		
 		return estacionAux;
-	}
-	
-	public static void updateEstacion(Estacion est) throws SQLException, ClassNotFoundException 
-	{
-		Connection c = Conexion.establecer();
-		PreparedStatement ps = c.prepareStatement(
-			"UPDATE tp_died.estacion " +
-			"SET nombre = ?, hora_apertura = ?, hora_cierre = ?, estado = ? " +
-			"WHERE id = ?;"
-		);
-		
-		ps.setString(1, est.getNombre());
-		ps.setObject(2, est.getHoraApertura());
-		ps.setObject(3, est.getHoraCierre());
-		if (est.getEstado() == Estacion.Estado.OPERATIVA)
-			ps.setString(4, "OPERATIVA");
-		else if (est.getEstado() == Estacion.Estado.EN_MANTENIMIENTO)
-			ps.setString(4, "EN_MANTENIMIENTO");
-		
-		ps.setInt(5, est.getId());
-		
-		ps.executeUpdate();
-		
-		ps.close();
-		c.close();
 	}
 }

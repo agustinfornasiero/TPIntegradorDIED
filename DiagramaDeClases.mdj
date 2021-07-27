@@ -2921,6 +2921,7 @@
 									"model": {
 										"$ref": "AAAAAAF6v5k4gJqc4Xg="
 									},
+									"visible": false,
 									"font": "Arial;13;0",
 									"left": 386,
 									"top": 560,
@@ -3683,7 +3684,6 @@
 							"_parent": {
 								"$ref": "AAAAAAF6v3bLOYWXGUA="
 							},
-							"name": "estacionesLínea",
 							"end1": {
 								"_type": "UMLAssociationEnd",
 								"_id": "AAAAAAF6v5k4gJqdeso=",

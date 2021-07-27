@@ -14,10 +14,26 @@ public class Tramo
 	private Integer cantidadMaximaPasajeros;
 	private Estado estado;
 	private Double costo;
-	private Estacion origen;
-	private Estacion destino;
+	private Integer idOrigen;
+	private Integer idDestino;
 	
+	public Tramo() {}
 	
+	public Tramo(
+		Double distanciaEnKm, Integer duracionViajeEnMin, Integer cantidadMaximaPasajeros, 
+		Estado estado, Double costo, Integer idOrigen, Integer idDestino
+	) 
+	{	
+		// El id lo asigna la DB
+		
+		this.distanciaEnKm = distanciaEnKm;
+		this.duracionViajeEnMin = duracionViajeEnMin;
+		this.cantidadMaximaPasajeros = cantidadMaximaPasajeros;
+		this.estado = estado;
+		this.costo = costo;
+		this.idOrigen = idOrigen;
+		this.idDestino = idDestino;
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -54,17 +70,17 @@ public class Tramo
 	public void setCosto(Double costo) {
 		this.costo = costo;
 	}
-	public Estacion getOrigen() {
-		return origen;
+	public Integer getIdOrigen() {
+		return idOrigen;
 	}
-	public void setOrigen(Estacion origen) {
-		this.origen = origen;
+	public void setIdOrigen(Integer idOrigen) {
+		this.idOrigen = idOrigen;
 	}
-	public Estacion getDestino() {
-		return destino;
+	public Integer getIdDestino() {
+		return idDestino;
 	}
-	public void setDestino(Estacion destino) {
-		this.destino = destino;
+	public void setIdDestino(Integer idDestino) {
+		this.idDestino = idDestino;
 	}
 }
 

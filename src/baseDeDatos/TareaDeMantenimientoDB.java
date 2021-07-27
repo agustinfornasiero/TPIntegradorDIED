@@ -1,0 +1,124 @@
+package baseDeDatos;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import entidades.TareaDeMantenimiento;
+
+public class TareaDeMantenimientoDB extends EntidadDB
+{
+	public TareaDeMantenimientoDB() throws ClassNotFoundException, SQLException { super(); }
+	
+	public void createTareaDeMantenimiento(TareaDeMantenimiento tarea, Integer idEstacion) throws SQLException
+	{
+		PreparedStatement ps = c.prepareStatement(
+			"INSERT INTO tp_died.tarea_de_mantenimiento (id, fecha_inicio, fecha_fin, observaciones, id_estacion) " +
+			"VALUES (NEXTVAL('tp_died.tarea_de_mantenimiento_seq'), ?, ?, ?, ?);"
+		);
+				
+		completarDatosBasicosTareaDeMantenimiento(ps, tarea, idEstacion);
+		ps.executeUpdate();
+		
+		ps.close();
+	}
+	
+	public void updateTareaDeMantenimiento(TareaDeMantenimiento tarea, Integer idEstacion) throws SQLException, ClassNotFoundException 
+	{
+		PreparedStatement ps = c.prepareStatement(
+			"UPDATE tp_died.tarea_de_mantenimiento " +
+			"SET fecha_inicio = ?, fecha_fin = ?, observaciones = ?, id_estacion = ? " +
+			"WHERE id = ?;"
+		);
+		
+		completarDatosBasicosTareaDeMantenimiento(ps, tarea, idEstacion);
+		ps.setInt(5, tarea.getId());
+		ps.executeUpdate();
+		
+		ps.close();
+	}
+
+	public void deleteTareaDeMantenimiento(Integer idTareaDeMantenimiento) throws ClassNotFoundException, SQLException 
+	{
+		PreparedStatement ps = c.prepareStatement("DELETE FROM tp_died.tarea_de_mantenimiento WHERE id = ?;");
+		
+		ps.setInt(1, idTareaDeMantenimiento);
+		ps.executeUpdate();
+		
+		ps.close();
+	}
+	
+	public TareaDeMantenimiento getTareaDeMantenimiento(Integer idTarea) throws SQLException, ClassNotFoundException
+	{
+		TareaDeMantenimiento tarea = null;
+		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tarea_de_mantenimiento WHERE id = ?;");		
+		ResultSet rs; 
+		
+		ps.setInt(1, idTarea);
+		rs = ps.executeQuery();
+		tarea = recuperarTareaDeMantenimiento(rs);
+		
+		rs.close();
+		ps.close();
+		
+		return tarea;
+	}
+
+	public List<TareaDeMantenimiento> getAllTareasDeMantenimiento() throws SQLException, ClassNotFoundException 
+	{
+		List<TareaDeMantenimiento> tareas = new ArrayList<TareaDeMantenimiento>();
+		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tarea_de_mantenimiento ORDER BY id;");		
+		ResultSet rs = ps.executeQuery();
+	
+		while (rs.next())
+			tareas.add(recuperarTareaDeMantenimiento(rs));
+		
+		rs.close();
+		ps.close();
+		
+		return tareas;
+	}
+	
+	public List<Integer> getAllTareasDeMantenimiento(Integer idEstacion) throws SQLException
+	{
+		List<Integer> tareas = new ArrayList<Integer>();
+		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tarea_de_mantenimiento WHERE id_estacion = ? ORDER BY id;");		
+		ResultSet rs;
+		
+		ps.setInt(1, idEstacion);
+		rs = ps.executeQuery();
+		while (rs.next())
+			tareas.add(rs.getInt("id_estacion"));
+		
+		rs.close();
+		ps.close();
+		
+		return tareas;
+	}
+
+	private void completarDatosBasicosTareaDeMantenimiento(PreparedStatement ps, TareaDeMantenimiento tarea, Integer idEstacion) throws SQLException
+	{
+		ps.setObject(1, tarea.getFechaInicio());
+		ps.setObject(2, tarea.getFechaFin());
+		ps.setString(3, tarea.getObservaciones());
+		ps.setInt(4, idEstacion);
+	}
+	
+	private TareaDeMantenimiento recuperarTareaDeMantenimiento(ResultSet rs) throws SQLException
+	{
+		TareaDeMantenimiento tareaAux = new TareaDeMantenimiento();
+		
+		tareaAux.setId(rs.getInt("id"));
+		tareaAux.setFechaInicio(rs.getObject("fecha_inicio", LocalDate.class));
+		tareaAux.setFechaFin(rs.getObject("fecha_fin", LocalDate.class));
+		tareaAux.setObservaciones(rs.getString("observaciones"));
+		
+		return tareaAux;
+	}
+}

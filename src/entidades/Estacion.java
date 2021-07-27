@@ -1,7 +1,7 @@
 package entidades;
 
 import java.time.LocalTime;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Estacion 
@@ -17,11 +17,10 @@ public class Estacion
 	private LocalTime horaApertura;
 	private LocalTime horaCierre;
 	private Estado estado;
-	private List <TareaDeMantenimiento> mantenimientosRealizados;
+	private List <Integer> idsMantenimientosRealizados;
 	
-	public Estacion()
-	{
-		mantenimientosRealizados = new LinkedList<TareaDeMantenimiento>();
+	public Estacion() {
+		idsMantenimientosRealizados = new ArrayList<Integer>();
 	}
 	
 	public Estacion(String nombre, LocalTime horaApertura, LocalTime horaCierre, Estado estado)
@@ -33,7 +32,7 @@ public class Estacion
 		this.horaCierre = horaCierre;
 		this.estado = estado;
 		
-		mantenimientosRealizados = new LinkedList<TareaDeMantenimiento>();
+		idsMantenimientosRealizados = new ArrayList<Integer>();
 	}
 
 
@@ -68,10 +67,10 @@ public class Estacion
 	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
-	public List<TareaDeMantenimiento> getMantenimientosRealizados() {
-		return mantenimientosRealizados;
+	public List<Integer> getIdsMantenimientosRealizados() {
+		return idsMantenimientosRealizados;
 	}
-	public void setMantenimientosRealizados(List<TareaDeMantenimiento> mantenimientosRealizados) {
-		this.mantenimientosRealizados = mantenimientosRealizados;
+	public void setIdsMantenimientosRealizados(List<Integer> idsMantenimientosRealizados) {
+		this.idsMantenimientosRealizados = idsMantenimientosRealizados;
 	}
 }
