@@ -20,6 +20,11 @@ public class TareaDeMantenimiento
 		this.observaciones = observaciones;
 	}
 	
+	public String toString() 
+	{
+		return "[" + id + ", " + fechaInicio.toString() + ", " + fechaFin.toString() + ", " + observaciones + "]";
+	}
+	
 	public Integer getId() {
 		return id;
 	}

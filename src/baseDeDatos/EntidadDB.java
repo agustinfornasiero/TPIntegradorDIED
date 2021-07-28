@@ -3,6 +3,8 @@ package baseDeDatos;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 //https://stackoverflow.com/questions/30964016/how-to-resolve-no-suitable-driver-found-error
 // https://stackoverflow.com/questions/33350971/no-suitable-driver-for-postgres-even-though-class-forname-works
@@ -24,5 +26,18 @@ public abstract class EntidadDB
 	
 	public void close() throws SQLException { 
 		c.close(); 
+	}
+	
+	// Llamar con "tp_died.<nombre>_seq"
+	protected Integer getIdTupla(String secuencia) throws SQLException 
+	{
+		PreparedStatement ps = c.prepareStatement("SELECT NEXTVAL('" + secuencia + "');");
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		Integer id = rs.getInt(1);
+		rs.close();
+		ps.close();
+		
+		return id;
 	}
 }

@@ -1,6 +1,5 @@
 package baseDeDatos;
 
-import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,12 +19,15 @@ public class BoletoDB extends EntidadDB
 
 	public void createBoleto(Boleto boleto) throws SQLException
 	{
+		Integer id = this.getIdTupla("tp_died.boleto_seq");
+		
 		PreparedStatement ps = c.prepareStatement(
 			"INSERT INTO tp_died.boleto (id, correo_electronico_cliente, nombre_cliente, fecha_venta, " +
 									   "nombre_estacion_origen, nombre_estacion_destino, costo, camino) " +
-			"VALUES (NEXTVAL('tp_died.boleto_seq'), ?, ?, ?, ?, ?, ?, ?);"
+			"VALUES (" + id + ", ?, ?, ?, ?, ?, ?, ?);"
 		);
-					
+		
+		boleto.setId(id);
 		completarDatosBasicosBoleto(ps, boleto);
 		ps.executeUpdate();
 			
@@ -35,9 +37,9 @@ public class BoletoDB extends EntidadDB
 	public void updateBoleto(Boleto boleto) throws SQLException
 	{
 		PreparedStatement ps = c.prepareStatement(
-			"UPDATE tp_died.boleto" +
+			"UPDATE tp_died.boleto " +
 			"SET correo_electronico_cliente = ?, nombre_cliente = ?, fecha_venta = ?," +
-				"nombre_estacion_origen = ?, nombre_estacion_destino = ?, costo = ?, camino = ?" +
+				"nombre_estacion_origen = ?, nombre_estacion_destino = ?, costo = ?, camino = ? " +
 			"WHERE id = ?;"
 		);
 						
@@ -67,7 +69,8 @@ public class BoletoDB extends EntidadDB
 		
 		ps.setInt(1, idBoleto);
 		rs = ps.executeQuery();
-		boleto = recuperarBoleto(rs);
+		if (rs.next())
+			boleto = recuperarBoleto(rs);
 		
 		rs.close();
 		ps.close();
@@ -79,7 +82,7 @@ public class BoletoDB extends EntidadDB
 	{
 		List<Boleto> boletos = new ArrayList<Boleto>();
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.boleto;");		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.boleto ORDER BY id;");		
 		ResultSet rs; 
 		
 		rs = ps.executeQuery();
@@ -101,8 +104,8 @@ public class BoletoDB extends EntidadDB
 		ps.setString(5, boleto.getNombreEstacionDestino());
 		ps.setDouble(6, boleto.getCosto());
 		
-		ps.setArray(7, c.createArrayOf("VARCHAR", boleto.getCamino().toArray())); // ??
-		//ps.setObject(7, boleto.getCamino()); // ??
+		ps.setArray(7, c.createArrayOf("VARCHAR", boleto.getCamino().toArray())); // Complicado, pero funciona
+		//ps.setObject(7, boleto.getCamino()); 
 	} 
 	
 	//@SuppressWarnings("unchecked")
@@ -110,14 +113,15 @@ public class BoletoDB extends EntidadDB
 	{
 		Boleto boletoAux = new Boleto();
 		
+		boletoAux.setId(rs.getInt("id"));
 		boletoAux.setCorreoElectronicoCliente(rs.getString("correo_electronico_cliente"));
 		boletoAux.setNombreCliente(rs.getString("nombre_cliente"));
 		boletoAux.setFechaVenta(rs.getObject("fecha_venta", LocalDate.class));
 		boletoAux.setNombreEstacionOrigen(rs.getString("nombre_estacion_origen"));
 		boletoAux.setNombreEstacionDestino(rs.getString("nombre_estacion_destino"));
 		
-		boletoAux.setCamino(Arrays.asList((String[]) rs.getArray("camino").getArray()));  // ??
-		//boletoAux.setCamino(rs.getObject("camino", ArrayList.class)); // ??
+		boletoAux.setCamino(Arrays.asList((String[]) rs.getArray("camino").getArray()));  // Complicado, pero funciona
+		//boletoAux.setCamino(rs.getObject("camino", ArrayList.class)); 
 		
 		return boletoAux;
 	}

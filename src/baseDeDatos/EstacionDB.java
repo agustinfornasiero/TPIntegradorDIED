@@ -16,11 +16,14 @@ public class EstacionDB extends EntidadDB
 	
 	public void createEstacion(Estacion estacion) throws SQLException 
 	{
+		Integer id = this.getIdTupla("tp_died.estacion_seq");
+		
 		PreparedStatement ps = c.prepareStatement(
-				"INSERT INTO tp_died.estacion (id, nombre, hora_apertura, hora_cierre, estado) " +
-				"VALUES (NEXTVAL('tp_died.estacion_seq'), ?, ?, ?, ?);"
+			"INSERT INTO tp_died.estacion (id, nombre, hora_apertura, hora_cierre, estado) " +
+			"VALUES (" + id + ", ?, ?, ?, ?);"
 		);
 				
+		estacion.setId(id);
 		completarDatosBasicosEstacion(ps, estacion);
 		// Los mantenimientos realizados se ignoran porque deben tratarse aparte con la clase TareaDeMantenimientoDB
 		// (el dato de la estación a la que se le hace mantenimiento esta en la tabla tarea_de_mantenimiento)
@@ -70,7 +73,8 @@ public class EstacionDB extends EntidadDB
 		
 		ps.setInt(1, idEstacion);
 		rs = ps.executeQuery();
-		estacion = recuperarEstacion(rs, tareaDB);
+		if (rs.next())
+			estacion = recuperarEstacion(rs, tareaDB);
 		
 		tareaDB.close();
 		rs.close();

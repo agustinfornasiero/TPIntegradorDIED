@@ -1,5 +1,7 @@
 package entidades;
 
+import entidades.LineaDeTransporte.Estado;
+
 public class Tramo 
 {
 	public enum Estado 
@@ -34,6 +36,13 @@ public class Tramo
 		this.idOrigen = idOrigen;
 		this.idDestino = idDestino;
 	}
+	
+	public String toString()
+	{
+		return "[" + id + ", " + distanciaEnKm + ", " + duracionViajeEnMin + ", " + cantidadMaximaPasajeros + ", " +
+				((estado == Estado.ACTIVO)? "ACTIVO" : "INACTIVO") + ", " + costo + ", " + idOrigen + ", " + idDestino + "]";
+	}
+	
 	public Integer getId() {
 		return id;
 	}

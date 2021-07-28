@@ -14,24 +14,27 @@ public class TramoDB extends EntidadDB
 
 	public void createTramo(Tramo tramo) throws SQLException
 	{
+		Integer id = this.getIdTupla("tp_died.tramo_seq");
+		
 		PreparedStatement ps = c.prepareStatement(
 			"INSERT INTO tp_died.tramo (id, distancia_en_km, duracion_viaje_en_min, cantidad_maxima_pasajeros, " +
 									   "estado, costo, id_estacion_origen, id_estacion_destino) " +
-			"VALUES (NEXTVAL('tp_died.tramo_seq'), ?, ?, ?, ?, ?, ?, ?);"
+			"VALUES (" + id + ", ?, ?, ?, ?, ?, ?, ?);"
 		);
-					
-			completarDatosBasicosTramo(ps, tramo);
-			ps.executeUpdate();
 			
-			ps.close();
+		tramo.setId(id);
+		completarDatosBasicosTramo(ps, tramo);
+		ps.executeUpdate();
+			
+		ps.close();
 	}
 
 	public void updateTramo(Tramo tramo) throws SQLException
 	{
 		PreparedStatement ps = c.prepareStatement(
-			"UPDATE tp_died.tramo" +
+			"UPDATE tp_died.tramo " +
 			"SET distancia_en_km = ?, duracion_viaje_en_min = ?, cantidad_maxima_pasajeros = ?, " +
-				"estado = ?, costo = ?, id_estacion_origen = ?, id_estacion_destino) = ?" +
+				"estado = ?, costo = ?, id_estacion_origen = ?, id_estacion_destino = ?" +
 			"WHERE id = ?;"
 		);
 						
@@ -61,7 +64,8 @@ public class TramoDB extends EntidadDB
 		
 		ps.setInt(1, idTramo);
 		rs = ps.executeQuery();
-		tramo = recuperarTramo(rs);
+		if (rs.next())
+			tramo = recuperarTramo(rs);
 		
 		rs.close();
 		ps.close();
@@ -73,7 +77,7 @@ public class TramoDB extends EntidadDB
 	{
 		List<Tramo> tramos = new ArrayList<Tramo>();
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tramo;");		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tramo ORDER BY id;");		
 		ResultSet rs; 
 		
 		rs = ps.executeQuery();
@@ -107,6 +111,7 @@ public class TramoDB extends EntidadDB
 		Tramo tramoAux = new Tramo();
 		String estadoTramo;
 		
+		tramoAux.setId(rs.getInt("id"));
 		tramoAux.setDistanciaEnKm(rs.getDouble("distancia_en_km"));
 		tramoAux.setDuracionViajeEnMin(rs.getInt("duracion_viaje_en_min"));
 		tramoAux.setCantidadMaximaPasajeros(rs.getInt("cantidad_maxima_pasajeros"));

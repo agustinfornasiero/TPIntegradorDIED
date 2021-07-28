@@ -1,6 +1,7 @@
 package entidades;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Boleto 
@@ -14,6 +15,33 @@ public class Boleto
 	private Double costo;
 	private List<String> camino;
 	
+	public Boleto() 
+	{
+		camino = new ArrayList<String>();
+	}
+	
+	public Boleto
+	(
+		String correoElectronicoCliente, String nombreCliente, LocalDate fechaVenta,
+		String nombreEstacionOrigen, String nombreEstacionDestino, Double costo, List<String> camino
+	) 
+	{
+		// El id lo asigna la DB
+		
+		this.correoElectronicoCliente = correoElectronicoCliente;
+		this.nombreCliente = nombreCliente;
+		this.fechaVenta = fechaVenta;
+		this.nombreEstacionOrigen = nombreEstacionOrigen;
+		this.nombreEstacionDestino = nombreEstacionDestino;
+		this.costo = costo;
+		this.camino = camino;
+	}
+	
+	public String toString()
+	{
+		return "[" + id + ", " + correoElectronicoCliente + ", " + nombreCliente + ", " + fechaVenta.toString()	+ ", " +
+				nombreEstacionOrigen + ", " + nombreEstacionDestino + ", " + camino.toString() + "]"; 
+	}
 	
 	public Integer getId() {
 		return id;
@@ -62,5 +90,12 @@ public class Boleto
 	}
 	public void setCamino(List<String> camino) {
 		this.camino = camino;
+	}
+	
+	public void addEstacionEnCamino(String nombreEstacion) {
+		camino.add(nombreEstacion);
+	}
+	public void removeEstacionEnCamino(String nombreEstacion) {
+		camino.remove(nombreEstacion);
 	}
 }

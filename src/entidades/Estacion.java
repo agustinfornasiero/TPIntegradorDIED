@@ -35,7 +35,12 @@ public class Estacion
 		idsMantenimientosRealizados = new ArrayList<Integer>();
 	}
 
-
+	public String toString()
+	{
+		return "[" + id + ", " + nombre + ", " + horaApertura.toString() + ", " 
+				+ horaCierre + ", " + ((estado == Estado.OPERATIVA)? "OPERATIVA" : "EN_MANTENIMIENTO") 
+				+ ", " + idsMantenimientosRealizados.toString() + "]";
+	}
 
 	public Integer getId() {
 		return id;
@@ -72,5 +77,13 @@ public class Estacion
 	}
 	public void setIdsMantenimientosRealizados(List<Integer> idsMantenimientosRealizados) {
 		this.idsMantenimientosRealizados = idsMantenimientosRealizados;
+	}
+	
+	// Solo para mantener consistente este objeto sin ir a la DB: 
+	public void addMantenimiento(Integer idMantenimiento) {
+		idsMantenimientosRealizados.add(idMantenimiento);
+	}
+	public void removeMantenimiento(Integer idMantenimiento) {
+		idsMantenimientosRealizados.remove(idMantenimiento);
 	}
 }

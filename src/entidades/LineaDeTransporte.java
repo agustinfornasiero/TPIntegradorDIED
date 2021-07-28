@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import entidades.Estacion.Estado;
+
 public class LineaDeTransporte 
 {
 	public enum Estado
@@ -32,6 +34,12 @@ public class LineaDeTransporte
 		this.estado = estado;
 		
 		idsEstaciones = new ArrayList<Integer>();
+	}
+	
+	public String toString()
+	{
+		return "[" + id + ", " + nombre + ", " + color + ", " + 
+				((estado == Estado.ACTIVA)? "ACTIVA" : "INACTIVA") + ", " + idsEstaciones.toString() + "]";
 	}
 	
 	public Integer getId() {
@@ -63,5 +71,13 @@ public class LineaDeTransporte
 	}
 	public void setIdsEstaciones(List<Integer> idsEstaciones) {
 		this.idsEstaciones = idsEstaciones;
+	}
+	
+	// Solo para mantener consistente este objeto sin ir a la DB: 
+	public void addEstacion(Integer idEstacion) {
+		idsEstaciones.add(idEstacion);
+	}
+	public void removeEstacion(Integer idEstacion) {
+		idsEstaciones.remove(idEstacion);
 	}
 }

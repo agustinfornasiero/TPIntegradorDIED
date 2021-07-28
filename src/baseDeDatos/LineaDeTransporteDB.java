@@ -14,11 +14,15 @@ public class LineaDeTransporteDB extends EntidadDB
 	
 	public void createLineaDeTransporte(LineaDeTransporte linea) throws SQLException, ClassNotFoundException
 	{
+		Integer id;
+		id = this.getIdTupla("tp_died.linea_de_transporte_seq");
+		
 		PreparedStatement ps = c.prepareStatement(
 			"INSERT INTO tp_died.linea_de_transporte (id, nombre, color, estado) " +
-			"VALUES (NEXTVAL('tp_died.linea_de_transporte_seq'), ?, ?, ?);"
+			"VALUES (" + id + ", ?, ?, ?);"
 		);
 				
+		linea.setId(id);
 		completarDatosBasicosLineaDeTransporte(ps, linea);
 		updateEstacionesLineaDeTransporte(linea);
 		ps.executeUpdate();
@@ -48,7 +52,7 @@ public class LineaDeTransporteDB extends EntidadDB
 		PreparedStatement ps2 = c.prepareStatement("DELETE FROM tp_died.estaciones_linea WHERE id_linea_de_transporte = ?;");
 		
 		ps1.setInt(1, idLineaDeTransporte);
-		ps2.setInt(2, idLineaDeTransporte);
+		ps2.setInt(1, idLineaDeTransporte);
 		
 		ps1.executeUpdate();
 		ps2.executeUpdate();
@@ -61,12 +65,13 @@ public class LineaDeTransporteDB extends EntidadDB
 	{
 		LineaDeTransporte linea = null;
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.linea_de_transporte WHERE id = ?;");		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.linea_de_transporte WHERE id = ? ORDER BY id;");		
 		ResultSet rs; 
 		
 		ps.setInt(1, idLineaDeTransporte);
 		rs = ps.executeQuery();
-		linea = recuperarLineaDeTransporte(rs);
+		if (rs.next())
+			linea = recuperarLineaDeTransporte(rs);
 		
 		rs.close();
 		ps.close();
@@ -144,13 +149,13 @@ public class LineaDeTransporteDB extends EntidadDB
 		List<Integer> idEstaciones = new ArrayList<Integer>();
 		
 		PreparedStatement ps = c.prepareStatement(
-			"SELECT id_estacion" +
+			"SELECT id_estacion " +
 			"FROM tp_died.estaciones_linea " +
 			"WHERE id_linea_de_transporte = ?;"
 		);
 		ResultSet rs;
 		
-		ps.setInt(0, idLinea);
+		ps.setInt(1, idLinea);
 		rs = ps.executeQuery();
 		while(rs.next())
 			idEstaciones.add(rs.getInt("id_estacion"));

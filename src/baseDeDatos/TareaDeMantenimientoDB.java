@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import entidades.Estacion;
 import entidades.TareaDeMantenimiento;
 
 public class TareaDeMantenimientoDB extends EntidadDB
@@ -15,11 +16,14 @@ public class TareaDeMantenimientoDB extends EntidadDB
 	
 	public void createTareaDeMantenimiento(TareaDeMantenimiento tarea, Integer idEstacion) throws SQLException
 	{
+		Integer id = this.getIdTupla("tp_died.tarea_de_mantenimiento_seq");
+		
 		PreparedStatement ps = c.prepareStatement(
 			"INSERT INTO tp_died.tarea_de_mantenimiento (id, fecha_inicio, fecha_fin, observaciones, id_estacion) " +
-			"VALUES (NEXTVAL('tp_died.tarea_de_mantenimiento_seq'), ?, ?, ?, ?);"
+			"VALUES (" + id + ", ?, ?, ?, ?);"
 		);
 				
+		tarea.setId(id);
 		completarDatosBasicosTareaDeMantenimiento(ps, tarea, idEstacion);
 		ps.executeUpdate();
 		
@@ -41,11 +45,11 @@ public class TareaDeMantenimientoDB extends EntidadDB
 		ps.close();
 	}
 
-	public void deleteTareaDeMantenimiento(Integer idTareaDeMantenimiento) throws ClassNotFoundException, SQLException 
+	public void deleteTareaDeMantenimiento(Integer idTarea) throws ClassNotFoundException, SQLException 
 	{
 		PreparedStatement ps = c.prepareStatement("DELETE FROM tp_died.tarea_de_mantenimiento WHERE id = ?;");
 		
-		ps.setInt(1, idTareaDeMantenimiento);
+		ps.setInt(1, idTarea);
 		ps.executeUpdate();
 		
 		ps.close();
@@ -60,7 +64,8 @@ public class TareaDeMantenimientoDB extends EntidadDB
 		
 		ps.setInt(1, idTarea);
 		rs = ps.executeQuery();
-		tarea = recuperarTareaDeMantenimiento(rs);
+		if (rs.next())
+			tarea = recuperarTareaDeMantenimiento(rs);
 		
 		rs.close();
 		ps.close();
