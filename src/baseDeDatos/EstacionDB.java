@@ -88,7 +88,7 @@ public class EstacionDB extends EntidadDB
 		List<Estacion> estaciones = new ArrayList<Estacion>();
 		
 		TareaDeMantenimientoDB tareaDB = new TareaDeMantenimientoDB();
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.estacion ORDER BY id;");		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.estacion");// ORDER BY id;");		
 		ResultSet rs = ps.executeQuery();
 		
 		while (rs.next())

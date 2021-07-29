@@ -1,5 +1,22 @@
 package grafo;
 
+import java.util.ArrayList;
+import entidades.Tramo;
+
+public final class Dupla
+{
+	// No el mejor disenio orientado a objetos
+	public Double costo;
+	public ArrayList<Tramo> camino;
+	
+	public Dupla(Double costo, ArrayList<Tramo> camino) 
+	{
+		this.costo = costo;
+		this.camino = camino;
+	}
+}
+
+/*
 public final class Dupla <T1, T2> 
 {
 	public T1 primero;
@@ -17,3 +34,4 @@ public final class Dupla <T1, T2>
 		this.segundo = segundo;
 	}
 }
+*/

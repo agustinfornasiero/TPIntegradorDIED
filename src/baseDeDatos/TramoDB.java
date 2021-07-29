@@ -77,7 +77,7 @@ public class TramoDB extends EntidadDB
 	{
 		List<Tramo> tramos = new ArrayList<Tramo>();
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tramo ORDER BY id;");		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tramo");// ORDER BY id;");		
 		ResultSet rs; 
 		
 		rs = ps.executeQuery();

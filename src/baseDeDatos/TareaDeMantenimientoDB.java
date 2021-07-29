@@ -77,7 +77,7 @@ public class TareaDeMantenimientoDB extends EntidadDB
 	{
 		List<TareaDeMantenimiento> tareas = new ArrayList<TareaDeMantenimiento>();
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tarea_de_mantenimiento ORDER BY id;");		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tarea_de_mantenimiento");// ORDER BY id;");		
 		ResultSet rs = ps.executeQuery();
 	
 		while (rs.next())
