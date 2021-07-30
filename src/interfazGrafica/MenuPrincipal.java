@@ -1,6 +1,5 @@
 package interfazGrafica;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import grafo.RedDeTransporte;
 import interfazGrafica.estacion.MenuEstaciones;
 import interfazGrafica.lineaDeTransporte.MenuLineasDeTransporte;
 
@@ -22,8 +22,11 @@ public class MenuPrincipal extends JPanel
 	private JLabel lbl1;
 	private JFrame ventana;
 	
-	public MenuPrincipal(JFrame ventana)
+	private RedDeTransporte redDeTransporte;
+	
+	public MenuPrincipal(JFrame ventana, RedDeTransporte redDeTransporte)
 	{
+		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		gbc = new GridBagConstraints();
 		this.setLayout(new GridBagLayout());
@@ -58,7 +61,7 @@ public class MenuPrincipal extends JPanel
 		this.add(btn1, gbc);
 		btn1.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuEstaciones(ventana, this));
+					ventana.setContentPane(new MenuEstaciones(ventana, this, redDeTransporte));
 					ventana.pack();
 					ventana.setVisible(true);	
 				 } 
@@ -74,7 +77,7 @@ public class MenuPrincipal extends JPanel
 		this.add(btn2, gbc);
 		btn2.addActionListener(
 			e -> {
-					ventana.setContentPane(new MenuLineasDeTransporte(ventana, this));
+					ventana.setContentPane(new MenuLineasDeTransporte(ventana, this, redDeTransporte));
 					ventana.pack();
 					ventana.setVisible(true);
 				 }

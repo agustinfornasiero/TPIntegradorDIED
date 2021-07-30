@@ -1,9 +1,12 @@
 package interfazGrafica.estacion;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -11,6 +14,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import entidades.Estacion;
+import grafo.RedDeTransporte;
 
 @SuppressWarnings("serial")
 public class MenuAgregarEstacion extends JPanel
@@ -23,8 +29,17 @@ public class MenuAgregarEstacion extends JPanel
 	private JFrame ventana;
 	private JPanel padre;
 	
-	public MenuAgregarEstacion(JFrame ventana, JPanel padre)
+	private RedDeTransporte redDeTransporte;
+	
+	private Estacion estacion;
+	private DateTimeFormatter formato;
+	
+	public MenuAgregarEstacion(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		estacion = new Estacion();
+		formato = DateTimeFormatter.ofPattern("HH:mm");
+		
+		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
 		gbc = new GridBagConstraints();
@@ -35,7 +50,7 @@ public class MenuAgregarEstacion extends JPanel
 	private void armarPanel() 
 	{
 		btn1 = new JButton("Aceptar");
-		btn2 = new JButton("Cancelar");
+		btn2 = new JButton("Volver");
 		
 		lbl1 = new JLabel("Nombre"); 
 		lbl2 = new JLabel("Horario de apertura");
@@ -66,7 +81,6 @@ public class MenuAgregarEstacion extends JPanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 5, 5, 5);
 		this.add(txtf1, gbc);
-		txtf1.addActionListener(e -> {}); // Pendiente
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -83,19 +97,6 @@ public class MenuAgregarEstacion extends JPanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(txtf2, gbc);
-		txtf1.addActionListener(
-			e -> {
-					txtf1.setText("");
-					txtf2.setText("");
-					txtf3.setText("");
-					cb1.setSelectedItem("Operativa");
-					txtf1.validate(); // Quiero que una vez ingresada una estacion se limpien los valores, pero no anda
-					txtf2.validate();
-					txtf3.validate();
-					cb1.validate();
-					// *Agregar a la DB*
-				 }	
-		); 
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -112,7 +113,6 @@ public class MenuAgregarEstacion extends JPanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(txtf3, gbc);
-		txtf1.addActionListener(e -> {}); // Pendiente
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
@@ -138,7 +138,34 @@ public class MenuAgregarEstacion extends JPanel
 		gbc.ipady = 15;
 		gbc.insets = new Insets(30, 20, 10, 20);
 		this.add(btn1, gbc);
-		btn1.addActionListener(e -> {});  // Pendiente
+		btn1.addActionListener(
+			e -> {
+					Estacion.Estado estado;
+					if (((String) cb1.getSelectedItem()).equals("Operativa")) 
+						estado = Estacion.Estado.OPERATIVA;
+					else	
+						estado = Estacion.Estado.EN_MANTENIMIENTO;
+					
+					actualizarEstacion
+					(
+						txtf1.getText(),
+						LocalTime.parse(txtf2.getText(), formato),
+						LocalTime.parse(txtf3.getText(), formato),
+						estado
+					);
+				
+					txtf1.setText("");
+					txtf2.setText("");
+					txtf3.setText("");
+					cb1.setSelectedItem("Operativa");
+					
+					txtf1.validate(); // Quiero que una vez ingresada una estacion se limpien los valores, pero no anda
+					txtf2.validate();
+					txtf3.validate();
+					cb1.validate();
+					
+				 }			
+		);  
 		
 		gbc.gridx = 1;
 		gbc.gridy = 4;
@@ -155,6 +182,22 @@ public class MenuAgregarEstacion extends JPanel
 					ventana.setVisible(true);
 				 } 
 		);
+	}
+	
+	public void actualizarEstacion(String nombre, LocalTime horaApertura, LocalTime horaCierre, Estacion.Estado estado)	
+	{
+		estacion.setNombre(nombre);
+		estacion.setHoraApertura(horaApertura);
+		estacion.setHoraCierre(horaCierre);
+		estacion.setEstado(estado);
+		
+		try {
+			redDeTransporte.addEstacion(estacion);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		estacion = new Estacion();
 	}
 }
 

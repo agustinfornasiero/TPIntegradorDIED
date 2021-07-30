@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import grafo.RedDeTransporte;
+
 @SuppressWarnings("serial")
 public class MenuEliminarLineaDeTransporte extends JPanel 
 {
@@ -22,9 +24,11 @@ public class MenuEliminarLineaDeTransporte extends JPanel
 	Integer[] opciones = {1, 2, 3}; // Provisional
 	String[] nombresLineasDeTransporte = {"Linea 1", "Linea 2", "Linea 3"}; // Provisional
 	
+	private RedDeTransporte redDeTransporte;
 	
-	public MenuEliminarLineaDeTransporte(JFrame ventana, JPanel padre)
+	public MenuEliminarLineaDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
 		gbc = new GridBagConstraints();

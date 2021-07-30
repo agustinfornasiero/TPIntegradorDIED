@@ -17,10 +17,11 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import grafo.RedDeTransporte;
+
 @SuppressWarnings("serial")
 public class MenuConsultarYModificarEstaciones extends JPanel implements TableModelListener
 {
-	@SuppressWarnings("serial")
 	class ModeloTablaEstaciones extends AbstractTableModel
 	{
 		private String[] nombreColumnas = {"Id", "Nombre", "Horario de apertura", "Horario de cierre", "Estado"};
@@ -53,9 +54,12 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 							{2, "Estacion B", "7:00", "23:00", "En mantenimiento"},
 	   						{3, "Estacion C", "7:00", "23:00", "Operativa"},
 					   };
+	
+	private RedDeTransporte redDeTransporte;
 
-	public MenuConsultarYModificarEstaciones(JFrame ventana, JPanel padre)
+	public MenuConsultarYModificarEstaciones(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
 	    this.setLayout(new GridBagLayout());

@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import grafo.RedDeTransporte;
+
 @SuppressWarnings("serial")
 public class MenuAgregarLineaDeTransporte extends JPanel
 {
@@ -23,8 +25,11 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 	private JFrame ventana;
 	private JPanel padre;
 	
-	public MenuAgregarLineaDeTransporte(JFrame ventana, JPanel padre)
+	private RedDeTransporte redDeTransporte;
+	
+	public MenuAgregarLineaDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
 		gbc = new GridBagConstraints();
@@ -35,7 +40,7 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 	private void armarPanel() 
 	{
 		btn1 = new JButton("Aceptar");
-		btn2 = new JButton("Cancelar");
+		btn2 = new JButton("Volver");
 		
 		lbl1 = new JLabel("Nombre"); 
 		lbl2 = new JLabel("Color");

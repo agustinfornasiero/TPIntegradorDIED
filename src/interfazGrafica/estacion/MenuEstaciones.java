@@ -8,6 +8,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import grafo.RedDeTransporte;
+
 @SuppressWarnings("serial")
 public class MenuEstaciones extends JPanel
 {
@@ -16,8 +18,11 @@ public class MenuEstaciones extends JPanel
 	private JFrame ventana;
 	private JPanel padre;
 	
-	public MenuEstaciones(JFrame ventana, JPanel padre)
+	private RedDeTransporte redDeTransporte;
+	
+	public MenuEstaciones(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
 		gbc = new GridBagConstraints();
@@ -42,7 +47,7 @@ public class MenuEstaciones extends JPanel
 		this.add(btn1, gbc);
 		btn1.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuAgregarEstacion(ventana, this));
+					ventana.setContentPane(new MenuAgregarEstacion(ventana, this, redDeTransporte));
 					ventana.pack();
 					ventana.setVisible(true);	
 				 } 
@@ -58,7 +63,7 @@ public class MenuEstaciones extends JPanel
 		this.add(btn2, gbc);
 		btn2.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuConsultarYModificarEstaciones(ventana, this));
+					ventana.setContentPane(new MenuConsultarYModificarEstaciones(ventana, this, redDeTransporte));
 					ventana.pack();
 					ventana.setVisible(true);	
 				 }		
@@ -74,7 +79,7 @@ public class MenuEstaciones extends JPanel
 		this.add(btn3, gbc);
 		btn3.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuEliminarEstacion(ventana, this));
+					ventana.setContentPane(new MenuEliminarEstacion(ventana, this, redDeTransporte));
 					ventana.pack();
 					ventana.setVisible(true);	
 			 	 }

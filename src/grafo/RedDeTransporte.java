@@ -58,10 +58,19 @@ public class RedDeTransporte             // i.e. un digrafo
 		boletos = new TreeSet<Boleto>(boletoDB.getAllBoletos());
 	}
 	
+	public void close() throws SQLException
+	{
+		estacionDB.close();
+		tramoDB.close();
+		lineaDeTransporteDB.close();
+		tareaDeMantenimientoDB.close();
+		boletoDB.close();
+	}
+	
 	public void addEstacion(Estacion estacion) throws SQLException 
 	{
-		estaciones.add(estacion);
 		estacionDB.createEstacion(estacion);
+		estaciones.add(estacion);
 	}
 	public void updateEstacion(Estacion estacion) throws ClassNotFoundException, SQLException
 	{
@@ -69,14 +78,14 @@ public class RedDeTransporte             // i.e. un digrafo
 	}
 	public void deleteEstacion(Estacion estacion) throws ClassNotFoundException, SQLException
 	{
-		estaciones.remove(estacion);
 		estacionDB.deleteEstacion(estacion.getId());
+		estaciones.remove(estacion);
 	}
 	
 	public void addTramo(Tramo tramo) throws SQLException 
 	{
-		tramos.add(tramo);
 		tramoDB.createTramo(tramo);
+		tramos.add(tramo);
 	}
 	public void updateTramo(Tramo tramo) throws ClassNotFoundException, SQLException
 	{
@@ -84,14 +93,14 @@ public class RedDeTransporte             // i.e. un digrafo
 	}
 	public void deleteTramo(Tramo tramo) throws ClassNotFoundException, SQLException
 	{
-		tramos.remove(tramo);
 		tramoDB.deleteTramo(tramo.getId());
+		tramos.remove(tramo);
 	}
 	
 	public void addLineaDeTransporte(LineaDeTransporte lineaDeTransporte) throws SQLException, ClassNotFoundException 
 	{
-		lineasDeTransporte.add(lineaDeTransporte);
 		lineaDeTransporteDB.createLineaDeTransporte(lineaDeTransporte);
+		lineasDeTransporte.add(lineaDeTransporte);
 	}
 	public void updateLineaDeTransporte(LineaDeTransporte lineaDeTransporte) throws ClassNotFoundException, SQLException
 	{
@@ -99,14 +108,14 @@ public class RedDeTransporte             // i.e. un digrafo
 	}
 	public void deleteLineaDeTransporte(LineaDeTransporte lineaDeTransporte) throws ClassNotFoundException, SQLException
 	{
-		lineasDeTransporte.remove(lineaDeTransporte);
 		lineaDeTransporteDB.deleteLineaDeTransporte(lineaDeTransporte.getId());
+		lineasDeTransporte.remove(lineaDeTransporte);
 	}
 	
 	public void addTareaDeMantenimiento(TareaDeMantenimiento tareaDeMantenimiento, Estacion estacion) throws SQLException, ClassNotFoundException 
 	{
-		tareasDeMantenimiento.add(tareaDeMantenimiento);
 		tareaDeMantenimientoDB.createTareaDeMantenimiento(tareaDeMantenimiento, estacion.getId());
+		tareasDeMantenimiento.add(tareaDeMantenimiento);
 	}
 	public void updateTareaDeMantenimiento(TareaDeMantenimiento tareaDeMantenimiento, Estacion estacion) throws ClassNotFoundException, SQLException
 	{
@@ -114,14 +123,14 @@ public class RedDeTransporte             // i.e. un digrafo
 	}
 	public void deleteTareaDeMantenimiento(TareaDeMantenimiento tareaDeMantenimiento) throws ClassNotFoundException, SQLException
 	{
-		tareasDeMantenimiento.remove(tareaDeMantenimiento);
 		tareaDeMantenimientoDB.deleteTareaDeMantenimiento(tareaDeMantenimiento.getId());
+		tareasDeMantenimiento.remove(tareaDeMantenimiento);
 	}
 	
 	public void addBoleto(Boleto boleto) throws SQLException, ClassNotFoundException 
 	{
-		boletos.add(boleto);
 		boletoDB.createBoleto(boleto);
+		boletos.add(boleto);
 	}
 	public void updateBoleto(Boleto boleto) throws ClassNotFoundException, SQLException
 	{
@@ -129,8 +138,8 @@ public class RedDeTransporte             // i.e. un digrafo
 	}
 	public void deleteBoleto(Boleto boleto) throws ClassNotFoundException, SQLException
 	{
-		boletos.remove(boleto);
 		boletoDB.deleteBoleto(boleto.getId());
+		boletos.remove(boleto);
 	}
 	
 	// Metodos necesarios para las consultas en la interfaz grafica. 

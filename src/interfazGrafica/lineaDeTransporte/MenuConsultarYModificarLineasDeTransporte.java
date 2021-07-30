@@ -17,6 +17,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import grafo.RedDeTransporte;
+
 @SuppressWarnings("serial")
 public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements TableModelListener
 {
@@ -53,9 +55,12 @@ public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements
 							{2, "Linea 2", "Verde", "No Activa"},
 	   						{3, "Linea 3", "Azul", "Activa"},
 					   };
+	
+	private RedDeTransporte redDeTransporte;
 
-	public MenuConsultarYModificarLineasDeTransporte(JFrame ventana, JPanel padre)
+	public MenuConsultarYModificarLineasDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
 	    this.setLayout(new GridBagLayout());
