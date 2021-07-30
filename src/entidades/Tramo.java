@@ -16,12 +16,13 @@ public class Tramo implements Comparable<Tramo>
 	private Double costo;
 	private Integer idOrigen;
 	private Integer idDestino;
+	private Integer idLineaDeTransporte;
 	
 	public Tramo() {}
 	
 	public Tramo(
 		Double distanciaEnKm, Integer duracionViajeEnMin, Integer cantidadMaximaPasajeros, 
-		Estado estado, Double costo, Integer idOrigen, Integer idDestino
+		Estado estado, Double costo, Integer idOrigen, Integer idDestino, Integer idLineaDeTransporte
 	) 
 	{	
 		// El id lo asigna la DB
@@ -33,13 +34,15 @@ public class Tramo implements Comparable<Tramo>
 		this.costo = costo;
 		this.idOrigen = idOrigen;
 		this.idDestino = idDestino;
+		this.idLineaDeTransporte = idLineaDeTransporte;
 	}
 	
 	@Override
 	public String toString()
 	{
 		return "[" + id + ", " + distanciaEnKm + ", " + duracionViajeEnMin + ", " + cantidadMaximaPasajeros + ", " +
-				((estado == Estado.ACTIVO)? "ACTIVO" : "INACTIVO") + ", " + costo + ", " + idOrigen + ", " + idDestino + "]";
+				((estado == Estado.ACTIVO)? "ACTIVO" : "INACTIVO") + ", " + costo + ", " + idOrigen + ", " 
+				+ idDestino + ", " + idLineaDeTransporte + "]";
 	}
 	
 	@Override
@@ -119,6 +122,12 @@ public class Tramo implements Comparable<Tramo>
 	}
 	public void setIdDestino(Integer idDestino) {
 		this.idDestino = idDestino;
+	}
+	public Integer getIdLineaDeTransporte() {
+		return idLineaDeTransporte;
+	}
+	public void setIdLineaDeTransporte(Integer idLineaDeTransporte) {
+		this.idLineaDeTransporte = idLineaDeTransporte;
 	}
 }
 

@@ -24,7 +24,6 @@ public class LineaDeTransporteDB extends EntidadDB
 				
 		linea.setId(id);
 		completarDatosBasicosLineaDeTransporte(ps, linea);
-		updateEstacionesLineaDeTransporte(linea);
 		ps.executeUpdate();
 		
 		ps.close();
@@ -39,7 +38,6 @@ public class LineaDeTransporteDB extends EntidadDB
 		);
 		
 		completarDatosBasicosLineaDeTransporte(ps, linea);
-		updateEstacionesLineaDeTransporte(linea);
 		ps.setInt(4, linea.getId());
 		ps.executeUpdate();
 		
@@ -48,8 +46,8 @@ public class LineaDeTransporteDB extends EntidadDB
 	
 	public void deleteLineaDeTransporte(Integer idLineaDeTransporte) throws ClassNotFoundException, SQLException 
 	{
-		PreparedStatement ps1 = c.prepareStatement("DELETE FROM tp_died.linea_de_transporte WHERE id = ?;");
-		PreparedStatement ps2 = c.prepareStatement("DELETE FROM tp_died.estaciones_linea WHERE id_linea_de_transporte = ?;");
+		PreparedStatement ps1 = c.prepareStatement("DELETE FROM tp_died.tramo WHERE id_linea_de_transporte = ?;");
+		PreparedStatement ps2 = c.prepareStatement("DELETE FROM tp_died.linea_de_transporte WHERE id = ?;");
 		
 		ps1.setInt(1, idLineaDeTransporte);
 		ps2.setInt(1, idLineaDeTransporte);
@@ -65,14 +63,16 @@ public class LineaDeTransporteDB extends EntidadDB
 	{
 		LineaDeTransporte linea = null;
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.linea_de_transporte WHERE id = ? ORDER BY id;");		
+		TramoDB tramoDB = new TramoDB();
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.linea_de_transporte WHERE id = ?;");		
 		ResultSet rs; 
 		
 		ps.setInt(1, idLineaDeTransporte);
 		rs = ps.executeQuery();
 		if (rs.next())
-			linea = recuperarLineaDeTransporte(rs);
+			linea = recuperarLineaDeTransporte(rs, tramoDB);
 		
+		tramoDB.close();
 		rs.close();
 		ps.close();
 		
@@ -83,14 +83,17 @@ public class LineaDeTransporteDB extends EntidadDB
 	{
 		List<LineaDeTransporte> lineas = new ArrayList<LineaDeTransporte>();
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.linea_de_transporte");// ORDER BY id;");		
+		TramoDB tramoDB = new TramoDB();
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.linea_de_transporte;");// ORDER BY id;");		
 		ResultSet rs = ps.executeQuery();
 		
 		while (rs.next())
-			lineas.add(recuperarLineaDeTransporte(rs));
+			lineas.add(recuperarLineaDeTransporte(rs, tramoDB));
+		
 		
 		rs.close();
 		ps.close();
+		tramoDB.close();
 		
 		return lineas;
 	}
@@ -104,69 +107,8 @@ public class LineaDeTransporteDB extends EntidadDB
 		else if (linea.getEstado() == LineaDeTransporte.Estado.INACTIVA)
 			ps.setString(3, "INACTIVA");	
 	}
-	
-	private void updateEstacionesLineaDeTransporte(LineaDeTransporte linea) throws SQLException, ClassNotFoundException
-	{
-		List<Integer> idsEstacionesLineaEnDB = getEstacionesLineaDeTransporte(linea.getId());
-		
-		for (Integer e: idsEstacionesLineaEnDB)
-			if (!linea.getIdsEstaciones().contains(e))
-				deleteEstacionLineaDeTransporte(e, linea.getId());
-		
-		for (Integer e: linea.getIdsEstaciones())
-			if (!idsEstacionesLineaEnDB.contains(e))
-				createEstacionLineaDeTransporte(e, linea.getId());
-	}
-	
-	private void deleteEstacionLineaDeTransporte(Integer idEstacion, Integer idLinea) throws SQLException 
-	{
-		PreparedStatement ps = c.prepareStatement(
-			"DELETE FROM tp_died.estaciones_linea WHERE id_estacion = ? AND id_linea_de_transporte = ?;"
-		);
-		
-		ps.setInt(1, idEstacion);
-		ps.setInt(2, idLinea);
-		ps.executeUpdate();
-		
-		ps.close();
-	}
-	
-	private void createEstacionLineaDeTransporte(Integer idEstacion, Integer idLinea) throws SQLException
-	{
-		PreparedStatement ps = c.prepareStatement(
-			"INSERT INTO tp_died.estaciones_linea (id_estacion, id_linea_de_transporte) VALUES (?, ?);"
-		);
-		
-		ps.setInt(1, idEstacion);
-		ps.setInt(2, idLinea);
-		ps.executeUpdate();
-		
-		ps.close();
-	}
 
-	private List<Integer> getEstacionesLineaDeTransporte(Integer idLinea) throws SQLException, ClassNotFoundException
-	{
-		List<Integer> idEstaciones = new ArrayList<Integer>();
-		
-		PreparedStatement ps = c.prepareStatement(
-			"SELECT id_estacion " +
-			"FROM tp_died.estaciones_linea " +
-			"WHERE id_linea_de_transporte = ?;"
-		);
-		ResultSet rs;
-		
-		ps.setInt(1, idLinea);
-		rs = ps.executeQuery();
-		while(rs.next())
-			idEstaciones.add(rs.getInt("id_estacion"));
-		
-		rs.close();
-		ps.close();
-		
-		return idEstaciones;
-	}
-
-	private LineaDeTransporte recuperarLineaDeTransporte(ResultSet rs) throws SQLException, ClassNotFoundException
+	private LineaDeTransporte recuperarLineaDeTransporte(ResultSet rs, TramoDB tramoDB) throws SQLException, ClassNotFoundException
 	{
 		LineaDeTransporte lineaDeTransporteAux = new LineaDeTransporte();
 		String estadoLineaDeTransporte;
@@ -181,7 +123,7 @@ public class LineaDeTransporteDB extends EntidadDB
 		else if (estadoLineaDeTransporte.equals("INACTIVA"))
 			lineaDeTransporteAux.setEstado(LineaDeTransporte.Estado.INACTIVA);
 		
-		lineaDeTransporteAux.setIdsEstaciones(getEstacionesLineaDeTransporte(rs.getInt("id")));
+		lineaDeTransporteAux.setIdsTramos(tramoDB.getAllTramos(rs.getInt("id")));
 		
 		return lineaDeTransporteAux;
 	}

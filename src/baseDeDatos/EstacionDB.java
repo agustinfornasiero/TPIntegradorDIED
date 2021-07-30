@@ -51,8 +51,8 @@ public class EstacionDB extends EntidadDB
 
 	public void deleteEstacion(Integer idEstacion) throws ClassNotFoundException, SQLException 
 	{
-		PreparedStatement ps1 = c.prepareStatement("DELETE FROM tp_died.estacion WHERE id = ?;");
-		PreparedStatement ps2 = c.prepareStatement("DELETE FROM tp_died.tarea_de_mantenimiento WHERE id_estacion = ?;");
+		PreparedStatement ps1 = c.prepareStatement("DELETE FROM tp_died.tarea_de_mantenimiento WHERE id_estacion = ?;");
+		PreparedStatement ps2 = c.prepareStatement("DELETE FROM tp_died.estacion WHERE id = ?;");
 		
 		ps1.setInt(1, idEstacion);
 		ps2.setInt(1, idEstacion);
@@ -94,9 +94,9 @@ public class EstacionDB extends EntidadDB
 		while (rs.next())
 			estaciones.add(recuperarEstacion(rs, tareaDB));
 		
-		tareaDB.close();
 		rs.close();
 		ps.close();
+		tareaDB.close();
 		
 		return estaciones;
 	}

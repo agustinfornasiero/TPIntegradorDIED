@@ -76,7 +76,7 @@ public class TareaDeMantenimientoDB extends EntidadDB
 	{
 		List<TareaDeMantenimiento> tareas = new ArrayList<TareaDeMantenimiento>();
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tarea_de_mantenimiento");// ORDER BY id;");		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tarea_de_mantenimiento;");// ORDER BY id;");		
 		ResultSet rs = ps.executeQuery();
 	
 		while (rs.next())
@@ -90,20 +90,20 @@ public class TareaDeMantenimientoDB extends EntidadDB
 	
 	public List<Integer> getAllTareasDeMantenimiento(Integer idEstacion) throws SQLException
 	{
-		List<Integer> tareas = new ArrayList<Integer>();
+		List<Integer> idsTareas = new ArrayList<Integer>();
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tarea_de_mantenimiento WHERE id_estacion = ? ORDER BY id;");		
+		PreparedStatement ps = c.prepareStatement("SELECT id FROM tp_died.tarea_de_mantenimiento WHERE id_estacion = ?;");// ORDER BY id;");		
 		ResultSet rs;
 		
 		ps.setInt(1, idEstacion);
 		rs = ps.executeQuery();
 		while (rs.next())
-			tareas.add(rs.getInt("id_estacion"));
+			idsTareas.add(rs.getInt("id"));
 		
 		rs.close();
 		ps.close();
 		
-		return tareas;
+		return idsTareas;
 	}
 
 	private void completarDatosBasicosTareaDeMantenimiento(PreparedStatement ps, TareaDeMantenimiento tarea, Integer idEstacion) throws SQLException

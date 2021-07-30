@@ -36,9 +36,8 @@ public class TestDB
 	/* Ayuda:
 	 
 		DELETE FROM tp_died.tarea_de_mantenimiento;
-		DELETE FROM tp_died.estaciones_linea;
-		DELETE FROM tp_died.linea_de_transporte;
 		DELETE FROM tp_died.tramo;
+		DELETE FROM tp_died.linea_de_transporte;
 		DELETE FROM tp_died.estacion;
 		DELETE FROM tp_died.boleto;
 		
@@ -47,7 +46,6 @@ public class TestDB
 		ALTER SEQUENCE tp_died.tramo_seq RESTART;
 		ALTER SEQUENCE tp_died.estacion_seq RESTART;
 		ALTER SEQUENCE tp_died.boleto_seq RESTART;
-	
 	*/
 	
 	public static void testear()
@@ -99,9 +97,9 @@ public class TestDB
 		lin1 = new LineaDeTransporte("Linea A", "Amarilla y Negra", LineaDeTransporte.Estado.ACTIVA);
 		lin2 = new LineaDeTransporte("Linea B", "Blanca", LineaDeTransporte.Estado.INACTIVA);
 		
-		tra1 = new Tramo(1.0, 10, 10, Tramo.Estado.ACTIVO, 100.0, 0, 0);
-		tra2 = new Tramo(2.0, 10, 20, Tramo.Estado.ACTIVO, 200.0, 0, 0);
-		tra3 = new Tramo(3.0, 10, 15, Tramo.Estado.ACTIVO, 250.0, 0, 0);
+		tra1 = new Tramo(1.0, 10, 10, Tramo.Estado.ACTIVO, 100.0, null, null, null);
+		tra2 = new Tramo(2.0, 10, 20, Tramo.Estado.ACTIVO, 200.0, null, null, null);
+		tra3 = new Tramo(3.0, 10, 15, Tramo.Estado.ACTIVO, 250.0, null, null, null);
 		
 		List<String> camino = new ArrayList<String>(); 
 		camino.add(est1.getNombre()); camino.add(est2.getNombre()); camino.add(est3.getNombre());
@@ -148,8 +146,8 @@ public class TestDB
 		for (TareaDeMantenimiento t : tarDB.getAllTareasDeMantenimiento())
 			System.out.println(t);
 		
-		System.out.println();
-		System.out.println(estDB.getEstacion(est1.getId()));
+		//System.out.println();
+		//System.out.println(estDB.getEstacion(est1.getId()));
 	}
 	
 	private static void lineasDeTransporte() throws ClassNotFoundException, SQLException
@@ -157,33 +155,26 @@ public class TestDB
 		linDB.createLineaDeTransporte(lin1);
 		linDB.createLineaDeTransporte(lin2);
 		
-		lin1.setNombre("Linea A yay!");
-		lin1.addEstacion(est1.getId());
-		lin1.addEstacion(est2.getId());
-		linDB.updateLineaDeTransporte(lin1);
-		
 		for (LineaDeTransporte l : linDB.getAllLineasDeTransporte())
 			System.out.println(l);
 		
+		System.out.println();
+		
+		lin1.setNombre("Linea A yay!");
+		linDB.updateLineaDeTransporte(lin1);
 		linDB.deleteLineaDeTransporte(lin2.getId());
 		
-		System.out.println();
-		
 		for (LineaDeTransporte l : linDB.getAllLineasDeTransporte())
 			System.out.println(l);
 		
 		System.out.println();
-		
-		lin1.removeEstacion(est2.getId());
-		linDB.updateLineaDeTransporte(lin1);
-		System.out.println(linDB.getLineaDeTransporte(lin1.getId()));
 	}
 	
 	private static void tramos() throws SQLException
 	{
-		tra1.setIdOrigen(est1.getId()); tra1.setIdDestino(est2.getId());
-		tra2.setIdOrigen(est2.getId()); tra2.setIdDestino(est3.getId());
-		tra3.setIdOrigen(est3.getId()); tra3.setIdDestino(est1.getId());
+		tra1.setIdOrigen(est1.getId()); tra1.setIdDestino(est2.getId()); tra1.setIdLineaDeTransporte(lin1.getId());
+		tra2.setIdOrigen(est2.getId()); tra2.setIdDestino(est3.getId()); tra2.setIdLineaDeTransporte(lin1.getId());
+		tra3.setIdOrigen(est3.getId()); tra3.setIdDestino(est1.getId()); tra3.setIdLineaDeTransporte(lin1.getId());
 		
 		traDB.createTramo(tra1);
 		traDB.createTramo(tra2);

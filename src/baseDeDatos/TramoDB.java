@@ -18,8 +18,8 @@ public class TramoDB extends EntidadDB
 		
 		PreparedStatement ps = c.prepareStatement(
 			"INSERT INTO tp_died.tramo (id, distancia_en_km, duracion_viaje_en_min, cantidad_maxima_pasajeros, " +
-									   "estado, costo, id_estacion_origen, id_estacion_destino) " +
-			"VALUES (" + id + ", ?, ?, ?, ?, ?, ?, ?);"
+									   "estado, costo, id_estacion_origen, id_estacion_destino, id_linea_de_transporte) " +
+			"VALUES (" + id + ", ?, ?, ?, ?, ?, ?, ?, ?);"
 		);
 			
 		tramo.setId(id);
@@ -34,12 +34,12 @@ public class TramoDB extends EntidadDB
 		PreparedStatement ps = c.prepareStatement(
 			"UPDATE tp_died.tramo " +
 			"SET distancia_en_km = ?, duracion_viaje_en_min = ?, cantidad_maxima_pasajeros = ?, " +
-				"estado = ?, costo = ?, id_estacion_origen = ?, id_estacion_destino = ?" +
+				"estado = ?, costo = ?, id_estacion_origen = ?, id_estacion_destino = ?, id_linea_de_transporte = ? " +
 			"WHERE id = ?;"
 		);
 						
 		completarDatosBasicosTramo(ps, tramo);
-		ps.setInt(8, tramo.getId());
+		ps.setInt(9, tramo.getId());
 		ps.executeUpdate();
 				
 		ps.close();
@@ -77,7 +77,7 @@ public class TramoDB extends EntidadDB
 	{
 		List<Tramo> tramos = new ArrayList<Tramo>();
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tramo");// ORDER BY id;");		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.tramo;");// ORDER BY id;");		
 		ResultSet rs; 
 		
 		rs = ps.executeQuery();
@@ -88,6 +88,24 @@ public class TramoDB extends EntidadDB
 		ps.close();
 		
 		return tramos;
+	}
+	
+	public List<Integer> getAllTramos(Integer idLinea) throws SQLException
+	{
+		List<Integer> idsTramos = new ArrayList<Integer>();
+		
+		PreparedStatement ps = c.prepareStatement("SELECT id FROM tp_died.tramo WHERE id_linea_de_transporte = ?;");// ORDER BY id;");		
+		ResultSet rs; 
+		
+		ps.setInt(1, idLinea);
+		rs = ps.executeQuery();
+		while(rs.next())
+			idsTramos.add(rs.getInt("id"));
+		
+		rs.close();
+		ps.close();
+		
+		return idsTramos;
 	}
 
 	private void completarDatosBasicosTramo(PreparedStatement ps, Tramo tramo) throws SQLException 
@@ -104,6 +122,7 @@ public class TramoDB extends EntidadDB
 		ps.setDouble(5, tramo.getCosto());
 		ps.setInt(6, tramo.getIdOrigen());
 		ps.setInt(7, tramo.getIdDestino());
+		ps.setInt(8, tramo.getIdLineaDeTransporte());
 	} 
 	
 	private Tramo recuperarTramo(ResultSet rs) throws SQLException
@@ -125,6 +144,7 @@ public class TramoDB extends EntidadDB
 		tramoAux.setCosto(rs.getDouble("costo"));
 		tramoAux.setIdOrigen(rs.getInt("id_estacion_origen"));
 		tramoAux.setIdDestino(rs.getInt("id_estacion_destino"));
+		tramoAux.setIdLineaDeTransporte(rs.getInt("id_linea_de_transporte"));
 		
 		return tramoAux;
 	}

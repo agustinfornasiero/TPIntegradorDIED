@@ -15,11 +15,11 @@ public class LineaDeTransporte implements Comparable<LineaDeTransporte>
 	private String nombre;
 	private String color;
 	private Estado estado;
-	private List<Integer> idsEstaciones;
+	private List<Integer> idsTramos;
 	
 	public LineaDeTransporte() 
 	{
-		idsEstaciones = new ArrayList<Integer>();
+		idsTramos = new ArrayList<Integer>();
 	}
 	
 	public LineaDeTransporte(String nombre, String color, Estado estado) 
@@ -30,14 +30,14 @@ public class LineaDeTransporte implements Comparable<LineaDeTransporte>
 		this.color = color;
 		this.estado = estado;
 		
-		idsEstaciones = new ArrayList<Integer>();
+		idsTramos = new ArrayList<Integer>();
 	}
 	
 	@Override
 	public String toString()
 	{
 		return "[" + id + ", " + nombre + ", " + color + ", " + 
-				((estado == Estado.ACTIVA)? "ACTIVA" : "INACTIVA") + ", " + idsEstaciones.toString() + "]";
+				((estado == Estado.ACTIVA)? "ACTIVA" : "INACTIVA") + ", " + idsTramos.toString() + "]";
 	}
 	
 	@Override
@@ -94,18 +94,18 @@ public class LineaDeTransporte implements Comparable<LineaDeTransporte>
 	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
-	public List<Integer> getIdsEstaciones() {
-		return idsEstaciones;
+	public List<Integer> getIdsTramos() {
+		return idsTramos;
 	}
-	public void setIdsEstaciones(List<Integer> idsEstaciones) {
-		this.idsEstaciones = idsEstaciones;
+	public void setIdsTramos(List<Integer> idsEstaciones) {
+		this.idsTramos = idsEstaciones;
 	}
 	
 	// Solo para mantener consistente este objeto sin ir a la DB: 
-	public void addEstacion(Integer idEstacion) {
-		idsEstaciones.add(idEstacion);
+	public void addIdTramo(Integer idTramo) {
+		idsTramos.add(idTramo);
 	}
-	public void removeEstacion(Integer idEstacion) {
-		idsEstaciones.remove(idEstacion);
+	public void removeIdTramo(Integer idTramo) {
+		idsTramos.remove(idTramo);
 	}
 }

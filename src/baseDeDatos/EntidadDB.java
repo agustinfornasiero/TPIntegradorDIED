@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-//https://stackoverflow.com/questions/30964016/how-to-resolve-no-suitable-driver-found-error
+// https://stackoverflow.com/questions/30964016/how-to-resolve-no-suitable-driver-found-error
 // https://stackoverflow.com/questions/33350971/no-suitable-driver-for-postgres-even-though-class-forname-works
 // https://www.youtube.com/watch?v=C4EUAfDg4Hc
 

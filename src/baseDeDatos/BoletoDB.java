@@ -82,7 +82,7 @@ public class BoletoDB extends EntidadDB
 	{
 		List<Boleto> boletos = new ArrayList<Boleto>();
 		
-		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.boleto");// ORDER BY id;");		
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tp_died.boleto;");// ORDER BY id;");		
 		ResultSet rs; 
 		
 		rs = ps.executeQuery();

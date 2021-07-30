@@ -24,7 +24,7 @@ public final class App
 	public static void main (String[] args)
 	{
 		//TestDB.testear();
-		
+		///*
 		try { redDeTransporte = new RedDeTransporte(); } 
 		catch (ClassNotFoundException | SQLException e) { System.exit(137); }
 		
@@ -62,6 +62,7 @@ public final class App
 		ventana.pack();
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
+		//*/
 	}
 	
 	private static void cerrarConexion()
