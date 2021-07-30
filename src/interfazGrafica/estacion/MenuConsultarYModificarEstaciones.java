@@ -4,6 +4,11 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -12,12 +17,19 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import entidades.Estacion;
+import entidades.TareaDeMantenimiento;
 import grafo.RedDeTransporte;
+
+// https://stackoverflow.com/questions/3029079/how-to-disable-main-jframe-when-open-new-jframe
+// https://stackoverflow.com/questions/29807260/how-to-close-current-jframe
 
 @SuppressWarnings("serial")
 public class MenuConsultarYModificarEstaciones extends JPanel implements TableModelListener
@@ -33,7 +45,7 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 		public String getColumnName(int col) 			{ return nombreColumnas[col]; 			}
 		public Object getValueAt(int row, int col) 		{ return datos[row][col]; 				}
 		public Class getColumnClass(int c) 				{ return getValueAt(0, c).getClass(); 	}
-		public boolean isCellEditable(int row, int col) { return true; 							}
+		public boolean isCellEditable(int row, int col) { return (col > 0)? true : false;		}
 		public void setValueAt(Object value, int row, int col) 	
 		{
 		    datos[row][col] = value;
@@ -48,17 +60,19 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 	private JScrollPane sp;
 	private JFrame ventana;
 	private JPanel padre;
-	private JComboBox estado;
-	Object[][] datos = { //Provisional
-							{1, "Estacion A", "7:00", "23:00", "Operativa"},
-							{2, "Estacion B", "7:00", "23:00", "En mantenimiento"},
-	   						{3, "Estacion C", "7:00", "23:00", "Operativa"},
-					   };
+	private JComboBox<String> estado;
 	
+	private DateTimeFormatter formatoHora;
+	private List<Estacion> estaciones;
+	private Object[][] datos;
 	private RedDeTransporte redDeTransporte;
 
 	public MenuConsultarYModificarEstaciones(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		formatoHora = DateTimeFormatter.ofPattern("HH:mm");
+		estaciones = redDeTransporte.getAllEstaciones();
+		datos = new Object[estaciones.size()][5];
+		
 		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
@@ -84,7 +98,8 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 	    tabla.getModel().addTableModelListener(this);
 	    tabla.getColumnModel().getColumn(0).setPreferredWidth(20);
 	    tabla.getColumnModel().getColumn(4).setPreferredWidth(120);
-	    
+	
+	    this.recuperarDatos();
 	    modeloTabla.setData(datos);
 	
 	    gbc.gridx = 0;
@@ -111,12 +126,137 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 	
 	@Override
 	public void tableChanged(TableModelEvent e) {
-		int row = e.getFirstRow();
-        int column = e.getColumn();
-        TableModel model = (TableModel)e.getSource();
-        String columnName = model.getColumnName(column);
-        Object data = model.getValueAt(row, column);
+		int i = e.getFirstRow();
+        int j = e.getColumn();
+        Object datoModificado = ((TableModel) e.getSource()).getValueAt(i, j);
         
-        System.out.println("Nuevo valor: " + data);
+        try 
+        {
+        	switch(j)
+     		{
+            	case 1:
+            		estaciones.get(i).setNombre((String) datoModificado);
+             		break;
+             	case 2: 
+             		estaciones.get(i).setHoraApertura(LocalTime.parse((String) datoModificado, formatoHora));
+             		break;
+             	case 3: 
+             		estaciones.get(i).setHoraCierre(LocalTime.parse((String) datoModificado, formatoHora));
+             		break;
+             	case 4: 
+             		if (estado.getSelectedItem().equals("Operativa"))
+             		{
+             			if (estaciones.get(i).getEstado() == Estacion.Estado.EN_MANTENIMIENTO)
+             			{
+             				this.finalizarTareaDeMantenimiento(estaciones.get(i));
+             				estaciones.get(i).setEstado(Estacion.Estado.OPERATIVA);
+             			}
+             		}
+             		else
+             		{
+             			if (estaciones.get(i).getEstado() == Estacion.Estado.OPERATIVA)
+     					{
+     						this.crearVentanaObservaciones(estaciones.get(i));
+     						estaciones.get(i).setEstado(Estacion.Estado.EN_MANTENIMIENTO);
+     					}
+             		}
+             		break;
+     		}
+        	
+        	redDeTransporte.updateEstacion(estaciones.get(i));
+        }
+        catch (ClassNotFoundException | SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	public void recuperarDatos()
+	{
+		for (Integer i = 0; i < estaciones.size(); i++)
+		{
+			datos[i][0] = estaciones.get(i).getId();
+			datos[i][1] = estaciones.get(i).getNombre();
+			datos[i][2] = estaciones.get(i).getHoraApertura().toString();
+			datos[i][3] = estaciones.get(i).getHoraCierre().toString();
+			datos[i][4] = (estaciones.get(i).getEstado() == Estacion.Estado.OPERATIVA)? "Operativa" : "En Mantenimiento";
+		}
+	}
+	
+	public void iniciarTareaDeMantenimiento(Estacion estacion, String observaciones) throws ClassNotFoundException, SQLException
+	{
+		TareaDeMantenimiento tareaDeMantenimiento = new TareaDeMantenimiento(LocalDate.now(), null, observaciones);
+		redDeTransporte.addTareaDeMantenimiento(tareaDeMantenimiento, estacion);
+		estacion.addIdMantenimiento(tareaDeMantenimiento.getId());
+	}
+	
+	public void finalizarTareaDeMantenimiento(Estacion estacion) throws ClassNotFoundException, SQLException 
+	{
+		Integer idUltitmoMantenimiento = estacion.getIdsMantenimientosRealizados().get(estacion.getIdsMantenimientosRealizados().size() - 1);
+		TareaDeMantenimiento ultimoMantenimiento = redDeTransporte.getTareaDeMantenimiento(idUltitmoMantenimiento);
+		ultimoMantenimiento.setFechaFin(LocalDate.now());
+		redDeTransporte.updateTareaDeMantenimiento(ultimoMantenimiento, estacion);
+	}
+	
+	public void crearVentanaObservaciones(Estacion estacion)
+	{
+		JFrame ventanaObservaciones = new JFrame();
+		ventanaObservaciones.setTitle("Observaciones de tarea de mantenimiento"); 
+		ventanaObservaciones.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		ventanaObservaciones.setContentPane(new AgregarObservaciones(ventanaObservaciones, ventana, this, estacion));
+		ventanaObservaciones.pack();
+		ventanaObservaciones.setLocationRelativeTo(ventana);
+		ventanaObservaciones.setVisible(true);
+	}
+	
+	static class AgregarObservaciones extends JPanel
+	{
+		private GridBagConstraints gbc;
+		private static JFrame ventanaPadre;
+		
+		public AgregarObservaciones(
+			JFrame ventanaObservaciones, JFrame ventanaPadre, 
+			MenuConsultarYModificarEstaciones panelPadre, Estacion estacion
+		)
+		{
+			AgregarObservaciones.ventanaPadre = ventanaPadre;
+			ventanaPadre.setEnabled(false);
+	
+			
+			gbc = new GridBagConstraints();
+			this.setLayout(new GridBagLayout());
+			
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.insets = new Insets(5, 5, 5, 5);
+			JTextArea txta1 = new JTextArea(20, 50);
+			txta1.setEditable(true);
+			JScrollPane sp1 = new JScrollPane(txta1);
+			this.add(sp1, gbc);
+			
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			gbc.weightx = 1;
+			gbc.fill = GridBagConstraints.CENTER;
+			gbc.insets = new Insets(5, 5, 5, 5);
+			JButton btn1 = new JButton("Aceptar");
+			this.add(btn1, gbc);
+			btn1.addActionListener(
+				e -> { 
+						try {
+							panelPadre.iniciarTareaDeMantenimiento(estacion, txta1.getText());
+						} catch (ClassNotFoundException | SQLException e1) {
+							e1.printStackTrace();
+						}
+						ventanaObservaciones.dispose(); 
+						AgregarObservaciones.volverAVentanaPrincipal();
+					 }
+			);
+		}
+		
+		public static void volverAVentanaPrincipal() 
+		{
+			ventanaPadre.setEnabled(true);
+			ventanaPadre.setVisible(true);
+		}
 	}
 }

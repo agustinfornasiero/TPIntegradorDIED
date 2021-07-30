@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.SQLException;
+import java.time.LocalTime;
+import java.util.List;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -17,6 +20,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import entidades.Estacion;
+import entidades.LineaDeTransporte;
 import grafo.RedDeTransporte;
 
 @SuppressWarnings("serial")
@@ -34,7 +39,7 @@ public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements
 		public String getColumnName(int col) 			{ return nombreColumnas[col]; 			}
 		public Object getValueAt(int row, int col) 		{ return datos[row][col]; 				}
 		public Class getColumnClass(int c) 				{ return getValueAt(0, c).getClass(); 	}
-		public boolean isCellEditable(int row, int col) { return true; 							}
+		public boolean isCellEditable(int row, int col) { return (col > 0)? true : false;		}
 		public void setValueAt(Object value, int row, int col) 	
 		{
 		    datos[row][col] = value;
@@ -49,17 +54,17 @@ public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements
 	private JScrollPane sp;
 	private JFrame ventana;
 	private JPanel padre;
-	private JComboBox estado;
-	Object[][] datos = { //Provisional
-							{1, "Linea 1", "Rojo", "Activa"},
-							{2, "Linea 2", "Verde", "No Activa"},
-	   						{3, "Linea 3", "Azul", "Activa"},
-					   };
+	private JComboBox<String> estado;
 	
+	private Object[][] datos;
+	private List<LineaDeTransporte> lineasDeTransporte;
 	private RedDeTransporte redDeTransporte;
 
 	public MenuConsultarYModificarLineasDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		lineasDeTransporte = redDeTransporte.getAllLineasDeTransporte();
+		datos = new Object[lineasDeTransporte.size()][4];
+		
 		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
@@ -68,7 +73,6 @@ public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements
 	    this.armarPanel();
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void armarPanel()
 	{
 		btn1 = new JButton("Volver");
@@ -86,6 +90,7 @@ public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements
 	    tabla.getColumnModel().getColumn(0).setPreferredWidth(20);
 	    tabla.getColumnModel().getColumn(3).setPreferredWidth(120);
 	    
+	    this.recuperarDatos();
 	    modeloTabla.setData(datos);
 	
 	    gbc.gridx = 0;
@@ -112,12 +117,41 @@ public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements
 	
 	@Override
 	public void tableChanged(TableModelEvent e) {
-		int row = e.getFirstRow();
-        int column = e.getColumn();
-        TableModel model = (TableModel)e.getSource();
-        String columnName = model.getColumnName(column);
-        Object data = model.getValueAt(row, column);
+		int i = e.getFirstRow();
+        int j = e.getColumn();
+        Object datoModificado = ((TableModel) e.getSource()).getValueAt(i, j);
         
-        System.out.println("Nuevo valor: " + data);
+        switch(j)
+		{
+        	case 1:
+        		lineasDeTransporte.get(i).setNombre((String) datoModificado);
+        		break;
+        	case 2: 
+        		lineasDeTransporte.get(i).setColor((String) datoModificado);
+        		break;
+        	case 3: 
+        		if (estado.getSelectedItem().equals("Activa"))
+        			lineasDeTransporte.get(i).setEstado(LineaDeTransporte.Estado.ACTIVA);
+        		else
+        			lineasDeTransporte.get(i).setEstado(LineaDeTransporte.Estado.INACTIVA);
+        		break;
+		}
+        
+        try {
+			redDeTransporte.updateLineaDeTransporte(lineasDeTransporte.get(i));
+		} catch (ClassNotFoundException | SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	public void recuperarDatos()
+	{
+		for (Integer i = 0; i < lineasDeTransporte.size(); i++)
+		{
+			datos[i][0] = lineasDeTransporte.get(i).getId();
+			datos[i][1] = lineasDeTransporte.get(i).getNombre();
+			datos[i][2] = lineasDeTransporte.get(i).getColor();
+			datos[i][3] = (lineasDeTransporte.get(i).getEstado() == LineaDeTransporte.Estado.ACTIVA)? "Activa" : "Inactiva";
+		}
 	}
 }

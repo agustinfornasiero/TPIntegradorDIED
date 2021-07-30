@@ -145,11 +145,11 @@ public class RedDeTransporte             // i.e. un digrafo
 	// Metodos necesarios para las consultas en la interfaz grafica. 
 	// *NO* agregar o quitar elementos a las listas directamente. Usar add...() o remove...(). 
 	// Luego de hacer algun/os set...() sobre un objeto, usar update...()
-	public Set<Estacion> getEstaciones() 							{ return estaciones; 			}
-	public Set<Tramo> getTramos() 		 						 	{ return tramos; 				}
-	public Set<TareaDeMantenimiento> getTareasDeMantenimiento() 	{ return tareasDeMantenimiento; }
-	public Set<LineaDeTransporte> getLineasDeTransporte() 			{ return lineasDeTransporte; 	}
-	public Set<Boleto> getBoletos() 								{ return boletos; 				}
+	public List<Estacion> getAllEstaciones() 							{ return new ArrayList<Estacion>(estaciones); 							}
+	public List<Tramo> getAllTramos() 		 						 	{ return new ArrayList<Tramo>(tramos); 									}
+	public List<TareaDeMantenimiento> getAllTareasDeMantenimiento() 	{ return new ArrayList<TareaDeMantenimiento>(tareasDeMantenimiento);	}
+	public List<LineaDeTransporte> getAllLineasDeTransporte() 			{ return new ArrayList<LineaDeTransporte>(lineasDeTransporte);	 		}
+	public List<Boleto> getAllBoletos() 								{ return new ArrayList<Boleto>(boletos);								}
 	
 	/*
 	// No necesarios:
@@ -163,7 +163,15 @@ public class RedDeTransporte             // i.e. un digrafo
 	// -----------------------------------------------------------------------------------------------------------------------------------------------------
 	// Operaciones generales grafos:
 	
-	private Estacion getEstacion(Integer idEstacion)
+	public TareaDeMantenimiento getTareaDeMantenimiento(Integer idMantenimiento) 
+	{
+		for (TareaDeMantenimiento t: tareasDeMantenimiento)
+			if (t.getId().equals(idMantenimiento))
+				return t;
+		return null;
+	}
+	
+	public Estacion getEstacion(Integer idEstacion)
 	{
 		for (Estacion e: estaciones)
 			if (e.getId().equals(idEstacion))
@@ -182,7 +190,7 @@ public class RedDeTransporte             // i.e. un digrafo
 			
 			if 	(
 					idEstacion.equals(estacion.getId()) && 
-					estacion.getEstado() == Estacion.Estado.OPERATIVA
+					estacion.getEstado() == Estacion.Estado.OPERATIVA  // TODO: faltan contemplar los horarios de apertura / cierre
 				)
 				estacionesAdyacentes.add(this.getEstacion(idEstacion));
 		}

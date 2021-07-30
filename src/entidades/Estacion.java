@@ -111,10 +111,10 @@ public class Estacion implements Comparable<Estacion>
 	}
 	
 	// Solo para mantener consistente este objeto sin ir a la DB: 
-	public void addMantenimiento(Integer idMantenimiento) {
+	public void addIdMantenimiento(Integer idMantenimiento) {
 		idsMantenimientosRealizados.add(idMantenimiento);
 	}
-	public void removeMantenimiento(Integer idMantenimiento) {
+	public void removeIdMantenimiento(Integer idMantenimiento) {
 		idsMantenimientosRealizados.remove(idMantenimiento);
 	}
 }

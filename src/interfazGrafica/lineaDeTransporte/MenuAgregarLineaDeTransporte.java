@@ -1,9 +1,10 @@
 package interfazGrafica.lineaDeTransporte;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.SQLException;
+import java.time.LocalTime;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -12,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import entidades.Estacion;
+import entidades.LineaDeTransporte;
 import grafo.RedDeTransporte;
 
 @SuppressWarnings("serial")
@@ -27,8 +30,12 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 	
 	private RedDeTransporte redDeTransporte;
 	
+	private LineaDeTransporte lineaDeTransporte;
+	
 	public MenuAgregarLineaDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		lineaDeTransporte = new LineaDeTransporte();
+		
 		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
@@ -69,7 +76,6 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 5, 5, 5);
 		this.add(txtf1, gbc);
-		txtf1.addActionListener(e -> {}); // Pendiente
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -86,17 +92,6 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 		this.add(txtf2, gbc);
-		txtf2.addActionListener(
-			e -> {
-					txtf1.setText("");
-					txtf2.setText("");
-					cb1.setSelectedItem("Activa");
-					txtf1.validate(); // Quiero que una vez ingresada una estacion se limpien los valores, pero no anda
-					txtf2.validate();
-					cb1.validate();
-					// *Agregar a la DB*
-				 }	
-		); 
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -122,7 +117,26 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 		gbc.ipady = 15;
 		gbc.insets = new Insets(30, 20, 10, 20);
 		this.add(btn1, gbc);
-		btn1.addActionListener(e -> {});  // Pendiente
+		btn1.addActionListener(
+			e -> {
+					LineaDeTransporte.Estado estado;
+					if (((String) cb1.getSelectedItem()).equals("Activa")) 
+						estado = LineaDeTransporte.Estado.ACTIVA;
+					else	
+						estado = LineaDeTransporte.Estado.INACTIVA;
+				
+					actualizarLineaDeTransporte
+					(
+						txtf1.getText(),
+						txtf2.getText(),
+						estado
+					);
+					
+					txtf1.setText("");
+					txtf2.setText("");
+					cb1.setSelectedItem("Activa");
+				 }
+			);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 3;
@@ -138,6 +152,21 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 					ventana.pack();
 					ventana.setVisible(true);
 				 } 
-		);
+		);	
+	}
+	
+	public void actualizarLineaDeTransporte(String nombre, String color, LineaDeTransporte.Estado estado)	
+	{
+		lineaDeTransporte.setNombre(nombre);
+		lineaDeTransporte.setColor(color);
+		lineaDeTransporte.setEstado(estado);
+		
+		try {
+			redDeTransporte.addLineaDeTransporte(lineaDeTransporte);
+		} catch (SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		lineaDeTransporte = new LineaDeTransporte();
 	}
 }

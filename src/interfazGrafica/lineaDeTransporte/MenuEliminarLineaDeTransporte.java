@@ -3,6 +3,10 @@ package interfazGrafica.lineaDeTransporte;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -10,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import entidades.LineaDeTransporte;
 import grafo.RedDeTransporte;
 
 @SuppressWarnings("serial")
@@ -18,16 +23,19 @@ public class MenuEliminarLineaDeTransporte extends JPanel
 	private JFrame ventana;
 	private JPanel padre;
 	private GridBagConstraints gbc;
-	private JComboBox<Integer> cb;
+	private JComboBox<String> cb;
 	private JButton btn1, btn2;
-	private JLabel lbl1, lbl2;
-	Integer[] opciones = {1, 2, 3}; // Provisional
-	String[] nombresLineasDeTransporte = {"Linea 1", "Linea 2", "Linea 3"}; // Provisional
+	private JLabel lbl1;
 	
+	Map<String, LineaDeTransporte> lineasDeTransporteCb;
+	private List<LineaDeTransporte> lineasDeTransporte;
 	private RedDeTransporte redDeTransporte;
 	
 	public MenuEliminarLineaDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
+		lineasDeTransporte = redDeTransporte.getAllLineasDeTransporte();
+		lineasDeTransporteCb = new HashMap<String, LineaDeTransporte>();
+		
 		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
 		this.padre = padre;
@@ -40,15 +48,15 @@ public class MenuEliminarLineaDeTransporte extends JPanel
 	{
 		btn1 = new JButton("Eliminar");
 		btn2 = new JButton("Volver");
-		lbl1 = new JLabel("Seleccione la linea de transporte que desea eliminar: ");
-		lbl2 = new JLabel();
-		cb = new JComboBox<Integer>();
+		lbl1 = new JLabel("Seleccione la línea de transporte que desea eliminar: ");
+		cb = new JComboBox<String>();
+	
+		for (LineaDeTransporte e : lineasDeTransporte)
+		{
+			lineasDeTransporteCb.put(e.getId() + " - " + e.getNombre(), e);
+			cb.addItem(e.getId() + " - " + e.getNombre());
+		}
 		
-		// *Obtener ids lineas*
-		for (Integer i: opciones)
-			cb.addItem(i);
-		
-		this.gestionarLblNombreLineaDeTransporte();
 		if(cb.getItemCount() == 0)
 		{
 			btn1.setEnabled(false);
@@ -67,16 +75,6 @@ public class MenuEliminarLineaDeTransporte extends JPanel
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.ipady = 15;
-		gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.EAST;
-		gbc.weightx = 1.0;
-		gbc.weighty = 0.0;
-		gbc.insets = new Insets(5, 20, 5, 5);
-		this.add(lbl2, gbc);
-		
-		gbc.gridx = 1;
-		gbc.gridy = 1;
 		gbc.ipady = 0;
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -84,9 +82,8 @@ public class MenuEliminarLineaDeTransporte extends JPanel
 		gbc.weighty = 0.0;
 		gbc.insets = new Insets(5, 20, 5, 20);
 		this.add(cb, gbc);
-		cb.addActionListener(e -> this.gestionarLblNombreLineaDeTransporte()); 
 	
-		gbc.gridx = 3;
+		gbc.gridx = 1;
 		gbc.gridy = 1;
 		gbc.ipady = 15;
 		gbc.gridwidth = 1;
@@ -99,8 +96,16 @@ public class MenuEliminarLineaDeTransporte extends JPanel
 			e -> {
 					if (cb.getItemCount() > 0)
 					{
+						LineaDeTransporte auxLineaDeTransporte = lineasDeTransporteCb.get(cb.getSelectedItem());
 						cb.removeItem(cb.getSelectedItem());
-						// *Eliminar de la DB*
+						
+						try {
+							if (auxLineaDeTransporte != null) 
+								redDeTransporte.deleteLineaDeTransporte(auxLineaDeTransporte);
+						} catch (ClassNotFoundException | SQLException e1) {
+							e1.printStackTrace();
+						}
+						
 						if (cb.getItemCount() == 0)
 						{
 							btn1.setEnabled(false);
@@ -110,10 +115,10 @@ public class MenuEliminarLineaDeTransporte extends JPanel
 				 }
 		);
 		
-		gbc.gridx = 1;
+		gbc.gridx = 0;
 		gbc.gridy = 4;
 		gbc.ipady = 15;
-		gbc.gridwidth = 1;
+		gbc.gridwidth = 2;
 		gbc.fill = GridBagConstraints.CENTER;
 		gbc.weightx = 1.0;
 		gbc.weighty = 0.0;
@@ -126,13 +131,5 @@ public class MenuEliminarLineaDeTransporte extends JPanel
 					ventana.setVisible(true);
 				 }
 		);
-	}
-	
-	private void gestionarLblNombreLineaDeTransporte()
-	{
-		if (cb.getItemCount() - 1 > 0) 
-			lbl2.setText("(" + nombresLineasDeTransporte[(int) cb.getSelectedItem() - 1] + ")"); // Reemplazar con una consulta que obtenga el nombre de linea 
-		else
-			lbl2.setText("(Sin lineas de transporte restantes)");
 	}
 }

@@ -4,7 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -24,7 +23,7 @@ public class MenuAgregarEstacion extends JPanel
 	private GridBagConstraints gbc;
 	private JButton btn1, btn2;
 	private JLabel lbl1, lbl2, lbl3, lbl4;
-	private JTextField txtf1, txtf2, txtf3;
+	private JTextField txtf1, txtf2, txtf3;  // Podria haberse usado JFormattedTextField
 	private JComboBox<String> cb1;
 	private JFrame ventana;
 	private JPanel padre;
@@ -32,12 +31,12 @@ public class MenuAgregarEstacion extends JPanel
 	private RedDeTransporte redDeTransporte;
 	
 	private Estacion estacion;
-	private DateTimeFormatter formato;
+	private DateTimeFormatter formatoHora;
 	
 	public MenuAgregarEstacion(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
 		estacion = new Estacion();
-		formato = DateTimeFormatter.ofPattern("HH:mm");
+		formatoHora = DateTimeFormatter.ofPattern("HH:mm");
 		
 		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
@@ -149,8 +148,8 @@ public class MenuAgregarEstacion extends JPanel
 					actualizarEstacion
 					(
 						txtf1.getText(),
-						LocalTime.parse(txtf2.getText(), formato),
-						LocalTime.parse(txtf3.getText(), formato),
+						LocalTime.parse(txtf2.getText(), formatoHora),
+						LocalTime.parse(txtf3.getText(), formatoHora),
 						estado
 					);
 				
@@ -158,12 +157,6 @@ public class MenuAgregarEstacion extends JPanel
 					txtf2.setText("");
 					txtf3.setText("");
 					cb1.setSelectedItem("Operativa");
-					
-					txtf1.validate(); // Quiero que una vez ingresada una estacion se limpien los valores, pero no anda
-					txtf2.validate();
-					txtf3.validate();
-					cb1.validate();
-					
 				 }			
 		);  
 		
