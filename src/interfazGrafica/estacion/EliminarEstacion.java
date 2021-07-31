@@ -50,8 +50,8 @@ public class EliminarEstacion extends JPanel
 	
 		for (Estacion e : redDeTransporte.getAllEstaciones())
 		{
-			estacionesCb.put(e.getId() + " - " + e.getNombre(), e);
-			cb.addItem(e.getId() + " - " + e.getNombre());
+			estacionesCb.put(e.getNombre() + " (id: " + e.getId() + ")", e);
+			cb.addItem(e.getNombre() + " (id: " + e.getId() + ")");
 		}
 		
 		if(cb.getItemCount() == 0)

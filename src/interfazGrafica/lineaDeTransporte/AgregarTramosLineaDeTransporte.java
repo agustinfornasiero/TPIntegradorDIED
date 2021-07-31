@@ -5,10 +5,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -29,22 +29,30 @@ import grafo.RedDeTransporte;
 
 // https://stackoverflow.com/questions/3179136/jtable-how-to-refresh-table-model-after-insert-delete-or-update-the-data
 
+@SuppressWarnings("serial")
 public class AgregarTramosLineaDeTransporte extends JPanel 
 {
 	private ModeloTablaTramos mtt;
 	private JTable tbl;
 	private JScrollPane sp1;
-	private JComboBox<String> cb1, cb2, cb3, cb4;
-	private JButton btn1, btn2, btn3, btn4;
+	private JComboBox<String> cb1, cb2, cb3;
+	private JButton btnAgregar, btnEliminar, btnAceptar, btnCompletarDatos;
 	private JLabel lbl1, lbl2, lbl3;
 	private GridBagConstraints gbc;
 	private JFrame ventana;
 	private JPanel padre;
 	
-	private LinkedList<DuplaEstaciones> estacionesTramos;
+	private List<Tramo> tramosLinea;
 	private RedDeTransporte redDeTransporte;
 	private Map<String, Estacion> estacionesCb;
 	private Map<String, LineaDeTransporte> lineasCb;
+	
+	// Valores por defecto para los campos del tramo (Se hizo que en la db no pueda haber nulos)
+	// (DFLT: default)
+	private static final Double DISTANCIA_DFLT = Double.MAX_VALUE;
+	private static final Integer DURACION_DFLT = Integer.MAX_VALUE;
+	private static final Integer PASAJEROS_DFLT = 0;
+	private static final Double COSTO_DFLT = Double.MAX_VALUE;
 	
 	public AgregarTramosLineaDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte) 
 	{	
@@ -52,7 +60,7 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		this.padre = padre;
 		this.redDeTransporte = redDeTransporte;
 	
-		estacionesTramos = new LinkedList<DuplaEstaciones>();
+		tramosLinea = null;
 		estacionesCb = new HashMap<String, Estacion>();
 		lineasCb = new HashMap<String, LineaDeTransporte>();
 		gbc = new GridBagConstraints();
@@ -72,24 +80,24 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 			cb1.addItem(l.getNombre() + " (id: " + l.getId() + ")");
 		}
 		
-		for(Estacion e : redDeTransporte.getAllEstaciones())
+		for (Estacion e : redDeTransporte.getAllEstaciones())
 		{
 			estacionesCb.put(e.getNombre() + " (id: " + e.getId() + ")", e);
 			cb2.addItem(e.getNombre() + " (id: " + e.getId() + ")");
 			cb3.addItem(e.getNombre() + " (id: " + e.getId() + ")");
 		}
 		
-		for (Tramo t : redDeTransporte.getAllTramos())
+		tramosLinea = redDeTransporte.getAllTramos(lineasCb.get(cb1.getSelectedItem()));
 		
-		btn1 = new JButton("Agregar");
-		btn2 = new JButton("Eliminar");
-		btn3 = new JButton("Volver");
-		btn4 = new JButton("Aceptar");
+		btnAgregar = new JButton("Agregar");
+		btnEliminar = new JButton("Eliminar");
+		btnAceptar = new JButton("Aceptar");
+		btnCompletarDatos = new JButton("Completar datos");
 		
-		lbl1 = new JLabel("Línea de Transporte a completar: ");
-		lbl2 = new JLabel("Especifique un tramo: ");
+		lbl1 = new JLabel("Línea de transporte a completar: ");
+		lbl2 = new JLabel("Tramos");
 		
-		lbl3 = new JLabel(">>>       ");
+		lbl3 = new JLabel(">>>");
 		
 		mtt = new ModeloTablaTramos();
 		tbl = new JTable(mtt);
@@ -100,33 +108,41 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 0.2;
-		gbc.gridwidth = 1;
+		gbc.gridwidth = 2;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(10, 10, 10, 10);
 		gbc.ipady = 0;
 		this.add(lbl1, gbc);
 		
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 0;
-		gbc.weightx = 0.8;
-		gbc.gridwidth = 2;
+		gbc.weightx = 0.16;
+		gbc.gridwidth = 3;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 10, 10, 10);
 		gbc.ipady = 0;
 		this.add(cb1, gbc);
+		cb1.addActionListener(
+			e -> { 
+					tramosLinea = redDeTransporte.getAllTramos(lineasCb.get(cb1.getSelectedItem())); 
+					mtt.setData(this.recuperarDatosEstacionesTramos());
+					mtt.fireTableDataChanged();
+				 } 
+		);
+		
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.weightx = 1;
-		gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.NONE;
+		gbc.weightx = 1.0;
+		gbc.gridwidth = 6;
+		gbc.fill = GridBagConstraints.CENTER;
 		gbc.insets = new Insets(10, 10, 10, 10);
 		gbc.ipady = 0;
 		this.add(lbl2, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.16;
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(10, 10, 10, 10);
@@ -134,26 +150,23 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		this.add(cb2, gbc);
 		ActionListener a = 
 			e -> {
-					DuplaEstaciones auxDuplaEstaciones = 
-						new DuplaEstaciones(
-							estacionesCb.get(cb2.getSelectedItem()),
-							estacionesCb.get(cb3.getSelectedItem())
-						);
+					String cb2I = (String) cb2.getSelectedItem();
+					String cb3I = (String) cb3.getSelectedItem();
 					
 					// Controlar que un tramo no tenga de origen y destino la misma estacion,
 					// ni que haya tramos "repetidos"
-					if(cb2.getSelectedItem().equals(cb3.getSelectedItem()) || 
-					   estacionesTramos.contains(auxDuplaEstaciones))
-						btn1.setEnabled(false);						
+					if(cb2I.equals(cb3I) || 
+					   tramoFueAgregado(estacionesCb.get(cb2I), estacionesCb.get(cb3I)))
+						btnAgregar.setEnabled(false);						
 					else
-						btn1.setEnabled(true);
+						btnAgregar.setEnabled(true);
 		 	     };
 		a.actionPerformed(null);
 		cb2.addActionListener(a);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.16;
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(10, 10, 10, 10);
@@ -162,7 +175,7 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		
 		gbc.gridx = 2;
 		gbc.gridy = 2;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.16;
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(10, 10, 10, 10);
@@ -172,23 +185,36 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		
 		gbc.gridx = 3;
 		gbc.gridy = 2;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.16;
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(10, 10, 10, 10);
 		gbc.ipady = 15;
-		this.add(btn1, gbc);
-		btn1.addActionListener(
+		this.add(btnAgregar, gbc);
+		btnAgregar.addActionListener(
 			e -> {
-					estacionesTramos.add(
-						new DuplaEstaciones(
-							estacionesCb.get(cb2.getSelectedItem()),
-							estacionesCb.get(cb3.getSelectedItem())
-						)
+					Tramo auxTramo = new Tramo(
+						DISTANCIA_DFLT,
+						DURACION_DFLT,
+						PASAJEROS_DFLT,
+						Tramo.Estado.INACTIVO,
+						COSTO_DFLT,
+						estacionesCb.get(cb2.getSelectedItem()).getId(),
+						estacionesCb.get(cb3.getSelectedItem()).getId(),
+						lineasCb.get(cb1.getSelectedItem()).getId()
 					);
+					
+					tramosLinea.add(auxTramo);
+					try {
+						redDeTransporte.addTramo(auxTramo);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+					
 					mtt.setData(this.recuperarDatosEstacionesTramos());
 					mtt.fireTableDataChanged();
-					btn2.setEnabled(true);
+					btnEliminar.setEnabled(true);
+					btnCompletarDatos.setEnabled(true);
 					//btn1.setEnabled(false);
 					// Hacer la estacion destino de un tramo el origen de la siguiente:
 					cb2.setSelectedItem(cb3.getSelectedItem());
@@ -198,50 +224,84 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		
 		gbc.gridx = 4;
 		gbc.gridy = 2;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.16;
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(10, 10, 10, 10);
 		gbc.ipady = 15;
-		btn2.setEnabled(false);
-		this.add(btn2, gbc);
-		btn2.addActionListener(
+		if (tramosLinea.isEmpty())
+			btnEliminar.setEnabled(false);
+		else
+			btnEliminar.setEnabled(true);
+		this.add(btnEliminar, gbc);
+		btnEliminar.addActionListener(
 			e -> {
 					ArrayList<Integer> filasSeleccionadas = arrayAArrayList(tbl.getSelectedRows());
-					LinkedList<DuplaEstaciones> nuevoEstacionesTramos = new LinkedList<DuplaEstaciones>();
+					LinkedList<Tramo> nuevosTramos = new LinkedList<Tramo>();
 					
-					for (Integer i = 0; i < estacionesTramos.size(); i++)
+					for (Integer i = 0; i < tramosLinea.size(); i++)
+					{
 						if (!filasSeleccionadas.contains(i))
-							nuevoEstacionesTramos.add(estacionesTramos.get((int) i));
+							nuevosTramos.add(tramosLinea.get((int) i));
+						else
+						{
+							try {
+								redDeTransporte.deleteTramo(tramosLinea.get((int) i));
+							} catch (ClassNotFoundException | SQLException e1) {
+								e1.printStackTrace();
+							}
+						}
+					}
 					
-					estacionesTramos = nuevoEstacionesTramos;
+					tramosLinea = nuevosTramos;
 					
 					mtt.setData(this.recuperarDatosEstacionesTramos());
 					mtt.fireTableDataChanged();
 						
-					if (estacionesTramos.isEmpty())
-						btn2.setEnabled(false);
+					if (tramosLinea.isEmpty())
+						btnEliminar.setEnabled(false);
+				 }
+		);
+		
+		gbc.gridx = 5;
+		gbc.gridy = 2;
+		gbc.weightx = 0.16;
+		gbc.gridwidth = 1;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.ipady = 15;
+		if (tramosLinea.isEmpty())
+			btnCompletarDatos.setEnabled(false);
+		else
+			btnCompletarDatos.setEnabled(true);
+		this.add(btnCompletarDatos, gbc);
+		btnCompletarDatos.addActionListener(
+			e -> {
+					ventana.setContentPane(
+						new AgregarDatosTramo(tramosLinea.get(tbl.getSelectedRow()), this));
+					ventana.pack();
+					ventana.setVisible(true);		
 				 }
 		);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		gbc.weightx = 1.0;
-		gbc.gridwidth = 5;
+		gbc.gridwidth = 6;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 10, 10, 10);
 		gbc.ipady = 0;
 		this.add(sp1, gbc);
 		
-		gbc.gridx = 2;
+		gbc.gridx = 0;
 		gbc.gridy = 4;
-		gbc.weightx = 0.2;
-		gbc.gridwidth = 1;
+		gbc.weightx = 1.0;
+		gbc.gridwidth = 6;
 		gbc.fill = GridBagConstraints.CENTER;
 		gbc.insets = new Insets(10, 10, 10, 10);
 		gbc.ipady = 15;
-		this.add(btn3, gbc);
-		btn3.addActionListener(
+		this.add(btnAceptar, gbc);
+		btnAceptar.addActionListener(
 			e -> {
 					ventana.setContentPane(padre);
 					ventana.pack();
@@ -249,24 +309,7 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 				 }
 		);
 
-		gbc.gridx = 3;
-		gbc.gridy = 4;
-		gbc.weightx = 0.2;
-		gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.CENTER;
-		gbc.insets = new Insets(10, 10, 10, 10);
-		gbc.ipady = 15;
-		this.add(btn4, gbc);
-		btn4.addActionListener(
-			e -> {
-					for (DuplaEstaciones d : estacionesTramos)
-					{
-						ventana.setContentPane(new AgregarDatosTramo(d.origen, d.destino, this));
-						ventana.pack();
-						ventana.setVisible(true);
-					}
-				 }
-		);
+		
 	}
 	
 	private ArrayList<Integer> arrayAArrayList(int[] arr) 
@@ -278,17 +321,30 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		return arrL;
 	}
 
-	public Object[][] recuperarDatosEstacionesTramos()
+	private Object[][] recuperarDatosEstacionesTramos()
 	{
-		Object[][] datos = new Object[estacionesTramos.size()][2];
+		Object[][] datos = new Object[tramosLinea.size()][2];
+		Estacion estacionOrigen, estacionDestino;
 		
-		for (Integer i = 0; i < estacionesTramos.size(); i++)
+		for (int i = 0; i < tramosLinea.size(); i++)
 		{
-			datos[i][0] = estacionesTramos.get(i).origen.getNombre() + " (id: " + estacionesTramos.get(i).origen.getId() + ")";
-			datos[i][1] = estacionesTramos.get(i).destino.getNombre() + " (id: " + estacionesTramos.get(i).destino.getId() + ")";
+			estacionOrigen = redDeTransporte.getEstacion(tramosLinea.get(i).getIdOrigen());
+			estacionDestino = redDeTransporte.getEstacion(tramosLinea.get(i).getIdDestino());
+			
+			datos[i][0] = estacionOrigen.getNombre() + " (id: " + estacionOrigen.getId() + ")";
+			datos[i][1] = estacionDestino.getNombre() + " (id: " + estacionDestino.getId() + ")";
 		}
 		
 		return datos;
+	}
+	
+	public Boolean tramoFueAgregado(Estacion estacionOrigen, Estacion estacionDestino)
+	{
+		for (Tramo t : tramosLinea)
+			if (t.getIdOrigen().equals(estacionOrigen.getId()) && 
+				t.getIdDestino().equals(estacionDestino.getId()))
+				return true;
+		return false;
 	}
 	
 	class AgregarDatosTramo extends JPanel
@@ -300,13 +356,11 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		JComboBox<String> cb4;
 		JPanel padre;
 		
-		Estacion estacionOrigen;
-		Estacion estacionDestino;
+		Tramo tramo;
 		
-		public AgregarDatosTramo(Estacion estacionOrigen, Estacion estacionDestino, JPanel padre) 
+		public AgregarDatosTramo(Tramo tramo, JPanel padre) 
 		{	
-			this.estacionOrigen = estacionOrigen;
-			this.estacionDestino = estacionDestino;
+			this.tramo = tramo;
 			this.padre = padre;
 			gbc = new GridBagConstraints();
 			this.setLayout(new GridBagLayout());
@@ -316,8 +370,8 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		private void armarPanel()
 		{
 			lbl1 = new JLabel(
-				estacionOrigen.getNombre() + " (id: " + estacionOrigen.getId() + ") >>> " +
-				estacionDestino.getNombre() + " (id: " + estacionDestino.getId() + ")"
+				redDeTransporte.getEstacion(tramo.getIdOrigen()).getNombre() + " (id: " + tramo.getIdOrigen() + ")  >>>  " + 
+				redDeTransporte.getEstacion(tramo.getIdDestino()).getNombre() + " (id: " + tramo.getIdDestino() + ")"
 			);
 			lbl2 = new JLabel("Distancia [km]");
 			lbl3 = new JLabel("Duración del viaje [min]");
@@ -327,20 +381,33 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		
 			btn1 = new JButton("Aceptar");
 			
-			txtf1 = new JTextField(25);
-			txtf2 = new JTextField(25);
-			txtf3 = new JTextField(25);
-			txtf4 = new JTextField(25);
+			txtf1 = new JTextField(
+				tramo.getDistanciaEnKm().equals(DISTANCIA_DFLT)? "" : tramo.getDistanciaEnKm().toString(),
+				25
+			);
+			txtf2 = new JTextField(
+				tramo.getDuracionViajeEnMin().equals(DURACION_DFLT)? "" : tramo.getDuracionViajeEnMin().toString(), 
+				25
+			);
+			txtf3 = new JTextField(
+				tramo.getCantidadMaximaPasajeros().equals(PASAJEROS_DFLT)? "" : tramo.getCantidadMaximaPasajeros().toString(), 
+				25
+			);
+			txtf4 = new JTextField(
+				tramo.getCosto().equals(COSTO_DFLT)? "" : tramo.getCosto().toString(), 
+				25
+			);
 			
 			cb4 = new JComboBox<String>();
 			cb4.addItem("Activo");
 			cb4.addItem("Inactivo");
+			cb4.setSelectedItem((tramo.getEstado() == Tramo.Estado.ACTIVO)? "Activo" : "Inactivo");
 			
 			gbc.gridx = 0;
 			gbc.gridy = 0;
 			gbc.gridwidth = 2;
 			gbc.weightx = 1.0;
-			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.fill = GridBagConstraints.CENTER;
 			gbc.insets = new Insets(10, 5, 5, 5);
 			this.add(lbl1, gbc);
 			
@@ -440,17 +507,17 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 						else	
 							estado = Tramo.Estado.INACTIVO;
 						
-						agregarTramo
-						(
-							Double.parseDouble(txtf1.getText()),
-							Integer.parseInt(txtf2.getText()),
-							Integer.parseInt(txtf3.getText()),
-							estado,
-							Double.parseDouble(txtf4.getText()),
-							estacionOrigen.getId(),
-							estacionDestino.getId(),
-							lineasCb.get(cb1.getSelectedItem()).getId()
-						);
+						tramo.setDistanciaEnKm(Double.parseDouble(txtf1.getText()));
+						tramo.setDuracionViajeEnMin(Integer.parseInt(txtf2.getText()));
+						tramo.setCantidadMaximaPasajeros(Integer.parseInt(txtf3.getText()));
+						tramo.setEstado(estado);
+						tramo.setCosto(Double.parseDouble(txtf4.getText()));
+					
+						try {
+							redDeTransporte.updateTramo(tramo);
+						} catch (ClassNotFoundException | SQLException e1) {
+							e1.printStackTrace();
+						}
 						
 						ventana.setContentPane(padre);
 						ventana.pack();
@@ -458,25 +525,8 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 					 }			
 			);  
 		}
-		
-		public void agregarTramo(Double distanciaEnKm, Integer duracionViajeEnMin, Integer cantidadMaximaDePasajeros, 
-								 Tramo.Estado estado, Double costo, Integer idOrigen, Integer idDestino, 
-								 Integer idLineaDeTransporte) 
-		{
-			Tramo auxTramo = new Tramo(
-				distanciaEnKm, duracionViajeEnMin, cantidadMaximaDePasajeros, 
-				estado, costo, idOrigen, idDestino, idLineaDeTransporte
-			);
-			
-			try {
-				redDeTransporte.addTramo(auxTramo);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
-	@SuppressWarnings("serial")
 	class ModeloTablaTramos extends AbstractTableModel
 	{
 		private String[] nombreColumnas = {"Origen", "Destino"};
@@ -496,6 +546,7 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		}
 	 }
 	
+	/*
 	class DuplaEstaciones
 	{
 		public Estacion origen;
@@ -541,5 +592,7 @@ public class AgregarTramosLineaDeTransporte extends JPanel
 		{
 			return this.origen.toString() + " // " + this.destino.toString();
 		}
+
 	}
+	*/
 }

@@ -48,10 +48,10 @@ public class EliminarLineaDeTransporte extends JPanel
 		lbl1 = new JLabel("Seleccione la línea de transporte que desea eliminar: ");
 		cb = new JComboBox<String>();
 	
-		for (LineaDeTransporte e : redDeTransporte.getAllLineasDeTransporte())
+		for (LineaDeTransporte l : redDeTransporte.getAllLineasDeTransporte())
 		{
-			lineasDeTransporteCb.put(e.getId() + " - " + e.getNombre(), e);
-			cb.addItem(e.getId() + " - " + e.getNombre());
+			lineasDeTransporteCb.put(l.getNombre() + " (id: " + l.getId() + ")", l);
+			cb.addItem(l.getNombre() + " (id: " + l.getId() + ")");
 		}
 		
 		if(cb.getItemCount() == 0)

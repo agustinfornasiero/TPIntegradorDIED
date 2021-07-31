@@ -5,7 +5,7 @@
 -- Dumped from database version 13.3
 -- Dumped by pg_dump version 13.3
 
--- Started on 2021-07-30 18:00:33
+-- Started on 2021-07-31 19:57:46
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -155,7 +155,7 @@ CREATE TABLE tp_died.tarea_de_mantenimiento (
     fecha_inicio date NOT NULL,
     fecha_fin date,
     observaciones character varying(512),
-    id_estacion integer
+    id_estacion integer NOT NULL
 );
 
 
@@ -184,7 +184,7 @@ ALTER TABLE tp_died.tarea_de_mantenimiento_seq OWNER TO postgres;
 CREATE TABLE tp_died.tramo (
     id integer NOT NULL,
     distancia_en_km double precision NOT NULL,
-    duracion_viaje_en_min double precision NOT NULL,
+    duracion_viaje_en_min integer NOT NULL,
     cantidad_maxima_pasajeros integer NOT NULL,
     estado character varying(10) NOT NULL,
     costo double precision NOT NULL,
@@ -277,7 +277,7 @@ SELECT pg_catalog.setval('tp_died.boleto_seq', 0, false);
 -- Name: estacion_seq; Type: SEQUENCE SET; Schema: tp_died; Owner: postgres
 --
 
-SELECT pg_catalog.setval('tp_died.estacion_seq', 0, true);
+SELECT pg_catalog.setval('tp_died.estacion_seq', 0, false);
 
 
 --
@@ -295,7 +295,7 @@ SELECT pg_catalog.setval('tp_died.linea_de_transporte_seq', 0, false);
 -- Name: tarea_de_mantenimiento_seq; Type: SEQUENCE SET; Schema: tp_died; Owner: postgres
 --
 
-SELECT pg_catalog.setval('tp_died.tarea_de_mantenimiento_seq', 0, true);
+SELECT pg_catalog.setval('tp_died.tarea_de_mantenimiento_seq', 0, false);
 
 
 --
@@ -388,7 +388,7 @@ ALTER TABLE ONLY tp_died.tramo
     ADD CONSTRAINT id_linea_de_transporte_fk FOREIGN KEY (id_linea_de_transporte) REFERENCES tp_died.linea_de_transporte(id) NOT VALID;
 
 
--- Completed on 2021-07-30 18:00:34
+-- Completed on 2021-07-31 19:57:46
 
 --
 -- PostgreSQL database dump complete
