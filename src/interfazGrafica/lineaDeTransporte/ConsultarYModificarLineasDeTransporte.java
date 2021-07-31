@@ -25,13 +25,13 @@ import entidades.LineaDeTransporte;
 import grafo.RedDeTransporte;
 
 @SuppressWarnings("serial")
-public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements TableModelListener
+public class ConsultarYModificarLineasDeTransporte extends JPanel implements TableModelListener
 {
 	@SuppressWarnings("serial")
 	class ModeloTablaLineasDeTransporte extends AbstractTableModel
 	{
 		private String[] nombreColumnas = {"Id", "Nombre", "Color", "Estado"};
-		private Object[][] datos = { {"", "", ""} };
+		private Object[][] datos = { {"", "", "", ""} };
 		 
 		public void setData(Object[][] datos) 			{ this.datos = datos; 					}
 		public int getColumnCount() 					{ return nombreColumnas.length; 		}
@@ -60,7 +60,7 @@ public class MenuConsultarYModificarLineasDeTransporte extends JPanel implements
 	private List<LineaDeTransporte> lineasDeTransporte;
 	private RedDeTransporte redDeTransporte;
 
-	public MenuConsultarYModificarLineasDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
+	public ConsultarYModificarLineasDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
 		lineasDeTransporte = redDeTransporte.getAllLineasDeTransporte();
 		datos = new Object[lineasDeTransporte.size()][4];

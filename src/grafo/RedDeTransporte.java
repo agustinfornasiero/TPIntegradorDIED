@@ -151,14 +151,16 @@ public class RedDeTransporte             // i.e. un digrafo
 	public List<LineaDeTransporte> getAllLineasDeTransporte() 			{ return new ArrayList<LineaDeTransporte>(lineasDeTransporte);	 		}
 	public List<Boleto> getAllBoletos() 								{ return new ArrayList<Boleto>(boletos);								}
 	
-	/*
-	// No necesarios:
-	public void setEstaciones(List<Estacion> estaciones) 									{ this.estaciones = estaciones; 						}
-	public void setTramos(List<Tramo> tramos) 												{ this.tramos = tramos; 								}
-	public void setTareasDeMantenimiento(List<TareaDeMantenimiento> tareasDeMantenimiento) 	{ this.tareasDeMantenimiento = tareasDeMantenimiento; 	}
-	public void setLineasDeTransporte(List<LineaDeTransporte> lineasDeTransporte) 			{ this.lineasDeTransporte = lineasDeTransporte; 		}
-	public void setBoletos(List<Boleto> boletos)	 										{ this.boletos = boletos; 								}
-	*/
+	public List<Tramo> getAllTramos(LineaDeTransporte linea)
+	{
+		List<Tramo> tramosLinea = new ArrayList<Tramo>();
+		
+		for (Tramo t : tramos)
+			if (t.getIdLineaDeTransporte().equals(linea.getId()))
+				tramosLinea.add(t);
+		
+		return tramosLinea;
+	}
 	
 	// -----------------------------------------------------------------------------------------------------------------------------------------------------
 	// Operaciones generales grafos:

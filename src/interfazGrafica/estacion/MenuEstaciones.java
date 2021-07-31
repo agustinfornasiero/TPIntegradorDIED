@@ -47,7 +47,7 @@ public class MenuEstaciones extends JPanel
 		this.add(btn1, gbc);
 		btn1.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuAgregarEstacion(ventana, this, redDeTransporte));
+					ventana.setContentPane(new AgregarEstacion(ventana, this, redDeTransporte));
 					ventana.pack();
 					ventana.setVisible(true);	
 				 } 
@@ -63,7 +63,7 @@ public class MenuEstaciones extends JPanel
 		this.add(btn2, gbc);
 		btn2.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuConsultarYModificarEstaciones(ventana, this, redDeTransporte));
+					ventana.setContentPane(new ConsultarYModificarEstaciones(ventana, this, redDeTransporte));
 					ventana.pack();
 					ventana.setVisible(true);	
 				 }		
@@ -79,7 +79,7 @@ public class MenuEstaciones extends JPanel
 		this.add(btn3, gbc);
 		btn3.addActionListener(
 			e -> { 
-					ventana.setContentPane(new MenuEliminarEstacion(ventana, this, redDeTransporte));
+					ventana.setContentPane(new EliminarEstacion(ventana, this, redDeTransporte));
 					ventana.pack();
 					ventana.setVisible(true);	
 			 	 }

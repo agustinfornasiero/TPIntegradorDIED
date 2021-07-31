@@ -32,12 +32,12 @@ import grafo.RedDeTransporte;
 // https://stackoverflow.com/questions/29807260/how-to-close-current-jframe
 
 @SuppressWarnings("serial")
-public class MenuConsultarYModificarEstaciones extends JPanel implements TableModelListener
+public class ConsultarYModificarEstaciones extends JPanel implements TableModelListener
 {
 	class ModeloTablaEstaciones extends AbstractTableModel
 	{
 		private String[] nombreColumnas = {"Id", "Nombre", "Horario de apertura", "Horario de cierre", "Estado"};
-		private Object[][] datos = { {"", "", "", ""} };
+		private Object[][] datos = { {"", "", "", "", ""} };
 		 
 		public void setData(Object[][] datos) 			{ this.datos = datos; 					}
 		public int getColumnCount() 					{ return nombreColumnas.length; 		}
@@ -67,7 +67,7 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 	private Object[][] datos;
 	private RedDeTransporte redDeTransporte;
 
-	public MenuConsultarYModificarEstaciones(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
+	public ConsultarYModificarEstaciones(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
 		formatoHora = DateTimeFormatter.ofPattern("HH:mm");
 		estaciones = redDeTransporte.getAllEstaciones();
@@ -215,7 +215,7 @@ public class MenuConsultarYModificarEstaciones extends JPanel implements TableMo
 		
 		public AgregarObservaciones(
 			JFrame ventanaObservaciones, JFrame ventanaPadre, 
-			MenuConsultarYModificarEstaciones panelPadre, Estacion estacion
+			ConsultarYModificarEstaciones panelPadre, Estacion estacion
 		)
 		{
 			AgregarObservaciones.ventanaPadre = ventanaPadre;

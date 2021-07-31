@@ -18,7 +18,7 @@ import entidades.LineaDeTransporte;
 import grafo.RedDeTransporte;
 
 @SuppressWarnings("serial")
-public class MenuAgregarLineaDeTransporte extends JPanel
+public class AgregarLineaDeTransporte extends JPanel
 {
 	private GridBagConstraints gbc;
 	private JButton btn1, btn2;
@@ -32,7 +32,7 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 	
 	private LineaDeTransporte lineaDeTransporte;
 	
-	public MenuAgregarLineaDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
+	public AgregarLineaDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
 		lineaDeTransporte = new LineaDeTransporte();
 		
@@ -125,7 +125,7 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 					else	
 						estado = LineaDeTransporte.Estado.INACTIVA;
 				
-					actualizarLineaDeTransporte
+					agregarLineaDeTransporte
 					(
 						txtf1.getText(),
 						txtf2.getText(),
@@ -155,7 +155,7 @@ public class MenuAgregarLineaDeTransporte extends JPanel
 		);	
 	}
 	
-	public void actualizarLineaDeTransporte(String nombre, String color, LineaDeTransporte.Estado estado)	
+	public void agregarLineaDeTransporte(String nombre, String color, LineaDeTransporte.Estado estado)	
 	{
 		lineaDeTransporte.setNombre(nombre);
 		lineaDeTransporte.setColor(color);

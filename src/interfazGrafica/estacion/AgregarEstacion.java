@@ -18,7 +18,7 @@ import entidades.Estacion;
 import grafo.RedDeTransporte;
 
 @SuppressWarnings("serial")
-public class MenuAgregarEstacion extends JPanel
+public class AgregarEstacion extends JPanel
 {
 	private GridBagConstraints gbc;
 	private JButton btn1, btn2;
@@ -33,7 +33,7 @@ public class MenuAgregarEstacion extends JPanel
 	private Estacion estacion;
 	private DateTimeFormatter formatoHora;
 	
-	public MenuAgregarEstacion(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
+	public AgregarEstacion(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
 		estacion = new Estacion();
 		formatoHora = DateTimeFormatter.ofPattern("HH:mm");
@@ -145,7 +145,7 @@ public class MenuAgregarEstacion extends JPanel
 					else	
 						estado = Estacion.Estado.EN_MANTENIMIENTO;
 					
-					actualizarEstacion
+					agregarEstacion
 					(
 						txtf1.getText(),
 						LocalTime.parse(txtf2.getText(), formatoHora),
@@ -177,7 +177,7 @@ public class MenuAgregarEstacion extends JPanel
 		);
 	}
 	
-	public void actualizarEstacion(String nombre, LocalTime horaApertura, LocalTime horaCierre, Estacion.Estado estado)	
+	public void agregarEstacion(String nombre, LocalTime horaApertura, LocalTime horaCierre, Estacion.Estado estado)	
 	{
 		estacion.setNombre(nombre);
 		estacion.setHoraApertura(horaApertura);

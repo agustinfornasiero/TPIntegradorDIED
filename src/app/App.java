@@ -2,12 +2,14 @@ package app;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.time.LocalTime;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import entidades.Estacion;
 import grafo.RedDeTransporte;
 import interfazGrafica.MenuPrincipal;
 import tests.TestDB;
@@ -23,8 +25,18 @@ public final class App
 	
 	public static void main (String[] args)
 	{
+		/*
+		Estacion est1 = new Estacion("Estacion A", LocalTime.now(), LocalTime.now().plusHours(7), Estacion.Estado.OPERATIVA);
+		est1.setId(0);
+
+		Estacion est2 = new Estacion("Estacion A", LocalTime.now(), LocalTime.now().plusHours(7), Estacion.Estado.OPERATIVA);
+		est1.setId(0);
+
+		System.out.println(est1.equals(est2));
+		*/
+		
 		//TestDB.testear();
-		///*
+		
 		try { redDeTransporte = new RedDeTransporte(); } 
 		catch (ClassNotFoundException | SQLException e) { System.exit(137); }
 		
@@ -62,7 +74,6 @@ public final class App
 		ventana.pack();
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
-		//*/
 	}
 	
 	private static void cerrarConexion()

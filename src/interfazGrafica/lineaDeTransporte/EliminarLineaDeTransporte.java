@@ -1,11 +1,10 @@
-package interfazGrafica.estacion;
+package interfazGrafica.lineaDeTransporte;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -14,11 +13,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import entidades.Estacion;
+import entidades.LineaDeTransporte;
 import grafo.RedDeTransporte;
 
 @SuppressWarnings("serial")
-public class MenuEliminarEstacion extends JPanel 
+public class EliminarLineaDeTransporte extends JPanel 
 {
 	private JFrame ventana;
 	private JPanel padre;
@@ -27,14 +26,12 @@ public class MenuEliminarEstacion extends JPanel
 	private JButton btn1, btn2;
 	private JLabel lbl1;
 	
-	Map<String, Estacion> estacionesCb;
-	private List<Estacion> estaciones;
+	Map<String, LineaDeTransporte> lineasDeTransporteCb;
 	private RedDeTransporte redDeTransporte;
 	
-	public MenuEliminarEstacion(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
+	public EliminarLineaDeTransporte(JFrame ventana, JPanel padre, RedDeTransporte redDeTransporte)
 	{
-		estaciones = redDeTransporte.getAllEstaciones();
-		estacionesCb = new HashMap<String, Estacion>();
+		lineasDeTransporteCb = new HashMap<String, LineaDeTransporte>();
 		
 		this.redDeTransporte = redDeTransporte;
 		this.ventana = ventana;
@@ -48,12 +45,12 @@ public class MenuEliminarEstacion extends JPanel
 	{
 		btn1 = new JButton("Eliminar");
 		btn2 = new JButton("Volver");
-		lbl1 = new JLabel("Seleccione la estación que desea eliminar: ");
+		lbl1 = new JLabel("Seleccione la línea de transporte que desea eliminar: ");
 		cb = new JComboBox<String>();
 	
-		for (Estacion e : estaciones)
+		for (LineaDeTransporte e : redDeTransporte.getAllLineasDeTransporte())
 		{
-			estacionesCb.put(e.getId() + " - " + e.getNombre(), e);
+			lineasDeTransporteCb.put(e.getId() + " - " + e.getNombre(), e);
 			cb.addItem(e.getId() + " - " + e.getNombre());
 		}
 		
@@ -96,12 +93,12 @@ public class MenuEliminarEstacion extends JPanel
 			e -> {
 					if (cb.getItemCount() > 0)
 					{
-						Estacion auxEstacion = estacionesCb.get(cb.getSelectedItem());
+						LineaDeTransporte auxLineaDeTransporte = lineasDeTransporteCb.get(cb.getSelectedItem());
 						cb.removeItem(cb.getSelectedItem());
 						
 						try {
-							if (auxEstacion != null) 
-								redDeTransporte.deleteEstacion(auxEstacion);
+							if (auxLineaDeTransporte != null) 
+								redDeTransporte.deleteLineaDeTransporte(auxLineaDeTransporte);
 						} catch (ClassNotFoundException | SQLException e1) {
 							e1.printStackTrace();
 						}
@@ -133,4 +130,3 @@ public class MenuEliminarEstacion extends JPanel
 		);
 	}
 }
-

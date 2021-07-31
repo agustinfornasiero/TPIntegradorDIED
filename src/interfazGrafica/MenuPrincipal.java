@@ -35,8 +35,8 @@ public class MenuPrincipal extends JPanel
 	
 	private void armarPanel() 
 	{
-		btn1 = new JButton("Estaciones");
-		btn2 = new JButton("Líneas de transporte");
+		btn1 = new JButton("Gestionar estaciones");
+		btn2 = new JButton("Gestionar líneas de transporte");
 		btn3 = new JButton("Venta de boleto");
 		
 		lbl1 = new JLabel("Sistema de gestión de transporte multimodal");
